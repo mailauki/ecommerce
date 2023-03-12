@@ -1,9 +1,11 @@
-import '../styles/header.css';
+import '../styles/Header.css';
+import CartButton from './CartButton';
 
 export default function Header() {
     return (
-        <div className="header">
-            <h1>Header</h1>
+        <div className="Header">
+            <h3>Header</h3>
+            <CartButton />
         </div>
     )
 }

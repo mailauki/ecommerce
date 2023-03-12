@@ -1,4 +1,4 @@
-.header {
+.Header {
     display: flex;
     flex-direction: row;
     height: fit-content;
@@ -9,6 +9,6 @@
     justify-content: space-between;
 }
 
-.header h1 {
+.Header h1 {
     flex-grow: 1;
 }
