@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, Avatar, Box, Button, IconButton } from '@m
 import CartButton from './CartButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
-export default function Header() {
+export default function Header({ user }) {
     const { pathname } = useLocation()
 
     return (
@@ -22,13 +22,13 @@ export default function Header() {
                     Header
                 </Typography>
 
-                {false ? (
+                {user ? (
                     <>
                         <CartButton />
 
-                        <IconButton>
+                        <IconButton component={Link} to="/me">
                             <Avatar 
-                                alt="username"
+                                alt={user.username || "username"}
                                 src=""
                                 sx={{ width: 24, height: 24 }} 
                             />

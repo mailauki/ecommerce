@@ -17,7 +17,23 @@ export default function Auth() {
         pathname === "/login" ? (
             console.log("login", formData)
         ) : (
-            console.log("signup", formData)
+            // console.log("signup", formData)
+            fetch("/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ ...formData, password_confirmation: formData.password })
+            })
+            .then((r) => {
+                if(r.ok) {
+                    r.json().then((user) => {
+                        console.log(user)
+                    })
+                } else {
+                    r.json().then((err) => console.log(err))
+                }
+            })
         )
     }
 
