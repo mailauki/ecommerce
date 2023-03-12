@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :product_tags
+  resources :tags
+  resources :products
   resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
