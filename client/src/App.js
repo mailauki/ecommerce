@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './styles/App.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -36,17 +36,11 @@ export default function App() {
         <div className="App">
           <Header />
           
-          <Switch>
-            <Route path="/testing">
-              <h1>Page Count: {count}</h1>
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
+          <Routes>
+            <Route path="/testing" element={<h1>Page Count: {count}</h1>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
         </div>
       </ThemeProvider>
     </BrowserRouter>
