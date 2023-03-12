@@ -5,14 +5,14 @@ export default function ProductCard() {
     const url = "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350"
 
     return (
-        <Card className="Card" sx={{ width: "50vw", borderRadius: 0}}>
+        <Card className="Card" sx={{ borderRadius: 0 }}>
             <CardActionArea>
                 <CardMedia 
                     component="img"
                     src={url}
                     title="image"
                 />
-                <CardContent>
+                <CardContent sx={{ height: "90px" }}>
                     <p>Product</p>
                 </CardContent>
             </CardActionArea>
