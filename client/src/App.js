@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import './styles/App.css';
+import Home from "./pages/Home";
 
-function App() {
+export default function App() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -15,15 +17,13 @@ function App() {
       <div className="App">
         <Switch>
           <Route path="/testing">
-            <h1>Test Route</h1>
+            <h1>Page Count: {count}</h1>
           </Route>
           <Route path="/">
-            <h1>Page Count: {count}</h1>
+            <Home />
           </Route>
         </Switch>
       </div>
     </BrowserRouter>
   );
 }
-
-export default App;

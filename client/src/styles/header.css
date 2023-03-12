@@ -1,0 +1,14 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: silver;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header h1 {
+    flex-grow: 1;
+}
