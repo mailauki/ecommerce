@@ -4,11 +4,12 @@
     height: fit-content;
     padding-left: 1rem;
     padding-right: 1rem;
-    background-color: silver;
+    background-color: #80808080;
     align-items: center;
     justify-content: space-between;
 }
 
-.Header h1 {
+.Header h3 {
     flex-grow: 1;
+    text-align: left;
 }
