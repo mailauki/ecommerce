@@ -15,7 +15,6 @@
     text-align: left;
 }
 
-.Header div a {
+.Header div a:hover {
     text-decoration: none;
-    color: inherit;
 }
