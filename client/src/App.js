@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -38,6 +39,9 @@ export default function App() {
           <Switch>
             <Route path="/testing">
               <h1>Page Count: {count}</h1>
+            </Route>
+            <Route path="/login">
+              <Login />
             </Route>
             <Route path="/">
               <Home />

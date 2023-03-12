@@ -9,7 +9,12 @@
     justify-content: space-between;
 }
 
-.Header h3 {
+.Header div {
     flex-grow: 1;
     text-align: left;
+}
+
+.Header div a {
+    text-decoration: none;
+    color: inherit;
 }
