@@ -1,4 +1,3 @@
-// import '../styles/Header.css';
 import { Link, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Avatar, Box, Button, IconButton } from '@mui/material';
 import CartButton from './CartButton';

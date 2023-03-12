@@ -13,7 +13,7 @@ import Profile from "./pages/Profile";
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [count, setCount] = useState(0);
-  const [currentUser, setUser] = useState({});
+  const [currentUser, setUser] = useState(null);
 
   const theme = useMemo(
     () =>
@@ -29,9 +29,13 @@ export default function App() {
     fetch("/hello")
       .then((r) => r.json())
       .then((data) => setCount(data.count))
+
     fetch("/me")
-    .then((r) => r.json())
-    .then((user) => setUser(user))
+    .then((r) => {
+      if(r.ok) {
+        r.json().then((user) => setUser(user))
+      }
+    })
   }, []);
 
   return (
