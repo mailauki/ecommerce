@@ -15,24 +15,34 @@ const userSlice = createSlice({
         loading: false,
         errors: null
     },
-    reducers: {},
-    extraReducers: {
-        [fetchUser.pending](state) {
-            state.loading = true
-        },
-        [fetchUser.rejected](state, action) {
+    reducers: {
+        auth(state, action) {
+            state.entities = action.payload
             state.loading = false
+            state.errors = null
         },
-        [fetchUser.fulfilled](state, action) {
-            // state.entities = action.payload
+        logout(state, action) {
+            state.entities = null
+            state.loading = false
+            state.errors = null
+        }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchUser.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(fetchUser.fulfilled, (state, action) => {
             if(action.payload.errors) {
+                state.entities = null
                 state.errors = action.payload.errors
             } else {
                 state.entities = action.payload
+                state.errors = null
             }
             state.loading = false
-        }
+        })
     }
 })
 
+export const { auth, logout } = userSlice.actions
 export default userSlice.reducer

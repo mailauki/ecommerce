@@ -1,10 +1,19 @@
-import { useSelector} from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from '../features/user/userSlice';
+import { logout } from '../features/user/userSlice';
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 
 export default function Profile() {
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
+    const errors = useSelector((state) => state.user.errors);
+
+    useEffect(() => {
+        dispatch(fetchUser())
+    }, [dispatch]);
 
     function handleLogout() {
         fetch("/logout", {
@@ -13,12 +22,14 @@ export default function Profile() {
         .then((r) => {
             if(r.ok) {
                 alert("Logged Out")
+                dispatch(logout())
             }
+            dispatch(fetchUser())
         })
     }
 
-    if(!user) return <h1>No User Found</h1>
-    console.log(user)
+    if(errors) return <h1>{errors.map((err) => err)}</h1>
+    else if(!user) return <h1>No User Found</h1>
 
     return (
         <>

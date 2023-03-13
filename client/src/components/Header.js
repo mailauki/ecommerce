@@ -1,12 +1,20 @@
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from '../features/user/userSlice';
 import { AppBar, Toolbar, Typography, Avatar, Button, IconButton } from '@mui/material';
 import CartButton from './CartButton';
 // import MenuIcon from '@mui/icons-material/Menu';
 
 export default function Header() {
     const { pathname } = useLocation();
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
+    console.log(user)
+
+    useEffect(() => {
+        dispatch(fetchUser())
+    }, [dispatch]);
 
     return (
         <AppBar position="static" color="divider">

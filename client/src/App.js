@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { fetchUser } from './features/user/userSlice';
+// import { useDispatch } from 'react-redux';
+// import { fetchUser } from './features/user/userSlice';
 import './styles/App.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -14,12 +14,11 @@ import Profile from "./pages/Profile";
 
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [count, setCount] = useState(0);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchUser())
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUser())
+  // }, [dispatch]);
 
   const theme = useMemo(
     () =>
@@ -31,12 +30,6 @@ export default function App() {
     [prefersDarkMode]
   );
 
-  useEffect(() => {
-    fetch("/hello")
-      .then((r) => r.json())
-      .then((data) => setCount(data.count))
-  }, []);
-
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -46,7 +39,6 @@ export default function App() {
           <Header />
           
           <Routes>
-            <Route path="/testing" element={<h1>Page Count: {count}</h1>} />
             <Route path="/login" element={<Auth />} />
             <Route path="/signup" element={<Auth/>} />
             <Route path="/products/:id" element={<Product />} />
