@@ -1,8 +1,11 @@
+import { useSelector} from 'react-redux';
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 
-export default function Profile({ user }) {
+export default function Profile() {
+    const user = useSelector((state) => state.user.entities);
+
     function handleLogout() {
         fetch("/logout", {
             method: "DELETE"
@@ -15,6 +18,7 @@ export default function Profile({ user }) {
     }
 
     if(!user) return <h1>No User Found</h1>
+    console.log(user)
 
     return (
         <>

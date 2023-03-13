@@ -1,10 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Avatar, Box, Button, IconButton } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { AppBar, Toolbar, Typography, Avatar, Button, IconButton } from '@mui/material';
 import CartButton from './CartButton';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 
-export default function Header({ user }) {
-    const { pathname } = useLocation()
+export default function Header() {
+    const { pathname } = useLocation();
+    const user = useSelector((state) => state.user.entities);
 
     return (
         <AppBar position="static" color="divider">
