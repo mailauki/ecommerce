@@ -15,32 +15,32 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_12_202214) do
   enable_extension "plpgsql"
 
   create_table "carts", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "product_id", null: false
+    t.bigint "users_id", null: false
+    t.bigint "products_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_carts_on_product_id"
-    t.index ["user_id"], name: "index_carts_on_user_id"
+    t.index ["products_id"], name: "index_carts_on_products_id"
+    t.index ["users_id"], name: "index_carts_on_users_id"
   end
 
-  create_table "product_tags", force: :cascade do |t|
-    t.bigint "products_id"
-    t.bigint "tags_id"
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["products_id"], name: "index_product_tags_on_products_id"
-    t.index ["tags_id"], name: "index_product_tags_on_tags_id"
+  end
+
+  create_table "product_categories", force: :cascade do |t|
+    t.bigint "products_id"
+    t.bigint "categories_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["categories_id"], name: "index_product_categories_on_categories_id"
+    t.index ["products_id"], name: "index_product_categories_on_products_id"
   end
 
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "tags", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -52,8 +52,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_12_202214) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "carts", "products"
-  add_foreign_key "carts", "users"
-  add_foreign_key "product_tags", "products", column: "products_id"
-  add_foreign_key "product_tags", "tags", column: "tags_id"
+  add_foreign_key "carts", "products", column: "products_id"
+  add_foreign_key "carts", "users", column: "users_id"
+  add_foreign_key "product_categories", "categories", column: "categories_id"
+  add_foreign_key "product_categories", "products", column: "products_id"
 end

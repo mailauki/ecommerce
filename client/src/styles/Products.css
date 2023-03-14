@@ -1,0 +1,99 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100vw;
+    height: 400px;
+    grid-template-rows: 50% 50%;
+}
+
+.grid div:first-child {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+
+.grid .div:last-child {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.grid .Card {
+    width: 50vw;
+}
+
+.Card {
+    width: 400px;
+}
+
+.Card a {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+}
+
+.Card img {
+    flex: 1 1 auto;
+    object-fit: cover;
+    max-height: calc(100% - 90px);
+}
+
+.slider {
+    width: calc(400px * 21);
+    height: 300px;
+    overflow: hidden;
+    display: inline-flex;
+}
+
+.first {
+    -webkit-animation: slider-animation 400s linear infinite;
+    -moz-animation: slider-animation 400s linear infinite;
+    -ms-animation: slider-animation 400s linear infinite;
+    -o-animation: slider-animation 400s linear infinite;
+    animation: slider-animation 400s linear infinite;
+}
+
+@keyframes slider-animation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: calc(-400px * 21);
+    }
+}
+
+@-moz-keyframes slider-animation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: calc(-400px * 21);
+    }
+}
+
+@-webkit-keyframes slider-animation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: calc(-400px * 21);
+    }
+}
+
+@-ms-keyframes slider-animation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: calc(-400px * 21);
+    }
+}
+
+@-o-keyframes slider-animation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: calc(-400px * 21);
+    }
+}
