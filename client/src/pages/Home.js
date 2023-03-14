@@ -3,7 +3,7 @@ import "../styles/Products.css";
 import ProductCard from "../components/ProductCard";
 
 export default function Home() {
-    const [products, setProducts] = useState(null)
+    const [products, setProducts] = useState(null);
 
     useEffect(() => {
         fetch('https://api.storerestapi.com/products/')
