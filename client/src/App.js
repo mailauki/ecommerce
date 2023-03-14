@@ -1,7 +1,5 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import { useDispatch } from 'react-redux';
-// import { fetchUser } from './features/user/userSlice';
 import './styles/App.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -11,14 +9,10 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Product from "./pages/Product";
 import Profile from "./pages/Profile";
+import ProductForm from "./pages/ProductForm";
 
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(fetchUser())
-  // }, [dispatch]);
 
   const theme = useMemo(
     () =>
@@ -41,6 +35,7 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Auth />} />
             <Route path="/signup" element={<Auth/>} />
+            <Route path="/products/add" element={<ProductForm />} />
             <Route path="/products/:id" element={<Product />} />
             <Route path="/me" element={<Profile />} />
             <Route path="/" element={<Home />} />

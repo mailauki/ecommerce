@@ -1,4 +1,4 @@
-.Auth {
+.Form {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -6,7 +6,7 @@
     padding: 4rem;
 }
 
-.Auth .submit {
+.Form .submit {
     padding: 1rem;
     margin-top: 16px;
     margin-bottom: 8px;

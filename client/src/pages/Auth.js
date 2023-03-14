@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "../styles/Auth.css";
+import "../styles/Form.css";
 import { Button, TextField, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -53,7 +53,7 @@ export default function Auth() {
     }
 
     return (
-        <form className="Auth" onSubmit={handleAuth}>
+        <form className="Form" onSubmit={handleAuth}>
             <TextField 
                 label="Username" 
                 margin="normal" 

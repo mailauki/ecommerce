@@ -10,7 +10,6 @@ export default function Header() {
     const { pathname } = useLocation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
-    console.log(user)
 
     useEffect(() => {
         dispatch(fetchUser())
