@@ -6,20 +6,29 @@ import { TextField, Button, Autocomplete, Chip } from "@mui/material";
 export default function ProductForm() {
     const { pathname } = useLocation();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: "", description: "" });
+    const [formData, setFormData] = useState({ name: null, description: null });
     const [selectedCategories, setSelectedCategories] = useState([])
     const [categories, setCategories] = useState(null);
 
     useEffect(() => {
-        fetch('https://api.storerestapi.com/categories/')
-        .then((r) => r.json())
-        .then((data) => setCategories(data.data))
+        // fetch('https://api.storerestapi.com/categories/')
+        // .then((r) => r.json())
+        // .then((data) => setCategories(data.data))
+
+        fetch("/categories")
+        .then((r) => {
+            if(r.ok) {
+                r.json().then((data) => setCategories(data))
+            } else {
+                r.json().then((data) => console.log(data.error))
+            }
+        })
     }, [])
 
     function handleSubmit(e) {
         e.preventDefault()
 
-        // fetch("/products/", {
+        // fetch("/products", {
         //     method: "POST",
         //     headers: {
         //         "Content-Type": "application/json"
@@ -51,12 +60,24 @@ export default function ProductForm() {
             <Autocomplete
                 multiple
                 onChange={(event, newValue) => {
-                    const newCategories = newValue.filter((value) => !categories.map((cat) => cat.name).includes(value))
+                    const newValueLower = newValue.map((value) => value.toLowerCase())
+                    const newCategories = newValueLower.filter((value) => !categories.map((cat) => cat.name).includes(value))
                     if(newCategories) {
-                        newCategories.map((cat) => categories.push(Object.assign({name: cat})))
-                        // replace push with POST to db
+                        newCategories.map((cat) => {
+                            const addCategory = Object.assign({ name: cat })
+
+                            categories.push(addCategory) // dispatch ?
+
+                            fetch("/categories", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(addCategory)
+                            })
+                        })
                     }
-                    setSelectedCategories(categories.filter((cat) => newValue.includes(cat.name)))
+                    setSelectedCategories(categories.filter((cat) => newValueLower.includes(cat.name)))
                 }}
                 id="categories"
                 options={categories.map((option) => option.name)}
@@ -64,7 +85,7 @@ export default function ProductForm() {
                 freeSolo
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
-                        <Chip label={option} {...getTagProps({ index })} />
+                        <Chip label={option.toLowerCase()} {...getTagProps({ index })} />
                     ))
                 }
                 renderInput={(params) => (
