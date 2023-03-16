@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import "../styles/Form.css";
-import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography } from "@mui/material";
+import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Box, ImageListItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function ProductForm() {
@@ -13,9 +13,14 @@ export default function ProductForm() {
     const [url, setUrl] = useState("")
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [categories, setCategories] = useState(null);
-    // https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350
-    // https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Frog_on_palm_frond.jpg/1280px-Frog_on_palm_frond.jpg
-    // https://st2.depositphotos.com/1423335/5533/i/450/depositphotos_55336153-stock-photo-australian-green-tree-frog.jpg
+
+    // 705 T-shirt --- 705 Plain Short Sleeve and Long Sleeve T-Shirt
+    // 1 https://images.unsplash.com/photo-1618354691438-25bc04584c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 2 https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 3 https://images.unsplash.com/photo-1618354691229-88d47f285158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 4 https://images.unsplash.com/photo-1618354691229-88d47f285158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 5 https://images.unsplash.com/photo-1618354691321-e851c56960d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 6 https://images.unsplash.com/photo-1618354691714-7d92150909db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80
 
     useEffect(() => {
         // fetch('https://api.storerestapi.com/categories/')
@@ -57,7 +62,8 @@ export default function ProductForm() {
 
     return (
         <form className="Form" onSubmit={handleSubmit}>
-            <img src={url} alt={formData.name} />
+            <img src={url} alt={formData.name} style={{ height: "300px", objectFit: "contain" }} />
+
             <TextField 
                 label="Product Name" 
                 margin="normal" 
@@ -72,6 +78,7 @@ export default function ProductForm() {
                 value={formData.description} 
                 onChange={(e) => setFormData({...formData, description: e.target.value})} 
             />
+
             <Autocomplete
                 multiple
                 onChange={(event, newValue) => {
@@ -95,7 +102,6 @@ export default function ProductForm() {
                     setSelectedCategories(categories.filter((cat) => newValueLower.includes(cat.name)))
                 }}
                 id="categories"
-                // options={categories.map((option) => option.name)}
                 options={categories}
                 // defaultValue={}
                 getOptionLabel={(option) => {
@@ -126,44 +132,7 @@ export default function ProductForm() {
                     />
                 )}
             />
-            {/* <Autocomplete
-                multiple
-                onChange={(event, newValue) => {
-                    console.log(newValue)
-                    setImages(newValue.map((option) => Object.assign({ url: option })))
-                }}
-                inputValue={imageInputValue}
-                onInputChange={(event, newInputValue) => {
-                    setImageInputValue(newInputValue)
-                }}
-                filterSelectedOptions
-                selectOnFocus
-                clearOnBlur
-                handleHomeEndKeys
-                id="free-solo-with-text-demo"
-                options={images || []}
-                getOptionLabel={(option) => {
-                    // Value selected with enter, right from the input
-                    if (typeof option === 'string') {
-                        return option
-                    }
-                    // Add "xxx" option created dynamically
-                    if (option.inputValue) {
-                        return option.inputValue
-                    }
-                    // Regular option
-                    return option.url
-                }}
-                renderOption={(props, option) => <li {...props}>{option.url}</li>}
-                freeSolo
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Product Images"
-                        margin="normal" 
-                    />
-                )}
-            /> */}
+
             <List
                 subheader={
                     <ListSubheader 
@@ -179,7 +148,7 @@ export default function ProductForm() {
                 }
             >
                 {images.map((image) => (
-                    <ListItem>
+                    <ListItem key={image.url}>
                         <ListItemIcon>
                             <Checkbox 
                                 checked={images.includes(image)}

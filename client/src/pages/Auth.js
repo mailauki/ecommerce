@@ -9,6 +9,7 @@ export default function Auth() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState([])
 
     const handleClickShowPassword = () => setShowPassword((show) => !show)
 
@@ -29,7 +30,7 @@ export default function Auth() {
                         navigate("/me")
                     })
                 } else {
-                    r.json().then((err) => console.log(err))
+                    r.json().then((err) => setErrors(err.errors))
                 }
             })
         ) : (
@@ -59,6 +60,8 @@ export default function Auth() {
                 margin="normal" 
                 value={formData.username} 
                 onChange={(e) => setFormData({...formData, username: e.target.value})} 
+                error={errors.length !== 0 && errors.filter((err) => err.includes("username")).length !== 0}
+                helperText={errors.filter((err) => err.includes("username"))}
             />
             <TextField 
                 label="Password" 
@@ -79,6 +82,8 @@ export default function Auth() {
                             </IconButton>
                         </InputAdornment> 
                 }}
+                error={errors.length !== 0 && errors.filter((err) => err.includes("password")).length !== 0}
+                helperText={errors.filter((err) => err.includes("password"))}
             />
 
             <Button variant="contained" type="submit" className="submit">
