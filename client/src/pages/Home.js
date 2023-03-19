@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import "../styles/Products.css";
 import ProductCard from "../components/ProductCard";
-import { ImageList } from "@mui/material";
+import { Box, ImageList } from "@mui/material";
 
 export default function Home() {
     const [products, setProducts] = useState(null);
 
     useEffect(() => {
-        fetch('https://api.storerestapi.com/products?limit=8')
+        fetch('https://api.storerestapi.com/products?limit=10')
         .then((r) => r.json())
         .then((data) => setProducts(data.data))
     }, [])
@@ -26,9 +26,24 @@ export default function Home() {
                 rowHeight={200}
             >
                 {gridProducts.map((product, index) => (
-                    <ProductCard key={product.id || product._id} product={product} index={index} />
+                    <ProductCard key={product.id || product._id} product={product} index={index} grid />
                 ) )}
             </ImageList>
+
+            <Box sx={{ width: "100%", overflowX: "scroll" }}>
+                <ImageList
+                    sx={{ 
+                        width: `calc(200px * ${sliderProducts.length})`
+                    }}
+                    variant="quilted" 
+                    cols={sliderProducts.length}
+                    rowHeight={200}
+                >
+                    {sliderProducts.map((product, index) => (
+                        <ProductCard key={product.id || product._id} product={product} index={index} />
+                    ))}
+                </ImageList>
+            </Box>
 
             {/* <div className="grid">
                 {gridProducts.map((product) => <ProductCard key={product._id} product={product} />)}
