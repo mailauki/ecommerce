@@ -3,19 +3,17 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
 import "../styles/Form.css";
-import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, createFilterOptions, FormControl, OutlinedInput, InputLabel, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Tooltip } from "@mui/material";
+import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, createFilterOptions, Stack, DialogContentText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-const filter = createFilterOptions({
-    ignoreCase: true
-});
+const filter = createFilterOptions();
 
 export default function ProductForm() {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ name: "", description: "" });
     const [images, setImages] = useState([]);
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState("");
     const [url, setUrl] = useState("")
     const [selectedCategories, setSelectedCategories] = useState([]);
     // const [categories, setCategories] = useState(null);
@@ -24,14 +22,16 @@ export default function ProductForm() {
     const categories = useSelector((state) => state.categories.entities);
     const [open, setOpen] = useState(false);
 
-    function handleOpen(e) { 
+    function handleOpen(e) {
         e.preventDefault()
-        setOpen(true) 
+        setOpen(true)
     }
 
-    function handleClose() { setOpen(false) }
+    function handleClose() {
+        setOpen(false)
+    }
 
-    // 705 T-shirt --- 705 Plain Short Sleeve and Long Sleeve T-Shirt
+    // 705 T-Shirt --- 705 Plain Short Sleeve and Long Sleeve T-Shirt
     // 1 https://images.unsplash.com/photo-1618354691438-25bc04584c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
     // 2 https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
     // 3 https://images.unsplash.com/photo-1618354691229-88d47f285158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
@@ -40,23 +40,8 @@ export default function ProductForm() {
     // 6 https://images.unsplash.com/photo-1618354691714-7d92150909db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80
 
     useEffect(() => {
-        // fetch('https://api.storerestapi.com/categories/')
-        // .then((r) => r.json())
-        // .then((data) => setCategories(data.data))
-
-        // fetch("/categories")
-        // .then((r) => {
-        //     if(r.ok) {
-        //         r.json().then((data) => setCategories(data))
-        //     } else {
-        //         r.json().then((data) => console.log(data.error))
-        //     }
-        // })
-
         dispatch(fetchCategories())
     }, [dispatch])
-
-    // console.log(categories)
 
     function handleSubmit() {
         // fetch("/products", {
@@ -75,129 +60,89 @@ export default function ProductForm() {
         // })
 
         setOpen(false)
-        console.log(formData, selectedCategories, images)
+
+        const doubleCheckCategories = selectedCategories.map((selected) => {
+            const findCategory = categories.find((category) => category.name === selected.name)
+            if (findCategory) return findCategory
+            else return selected
+        }).filter((value, index, array) => array.indexOf(value) === index)
+
+        // if(selectedCategories.length !== 0 && doubleCheckCategories !== selectedCategories) {
+        //     console.log("not matching", {selectedCategories}, {doubleCheckCategories})
+        //     setSelectedCategories(doubleCheckCategories)
+        // }
+
+        console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
     }
 
-    if(!categories) return <h1>Loading...</h1>
+    if (!categories) return <h1>Loading...</h1>
 
     return (
         <>
             <form className="Form" onSubmit={handleOpen}>
                 <img src={url} alt={formData.name} style={{ height: "300px", objectFit: "contain", display: !url ? "none" : "" }} />
 
-                <TextField 
-                    label="Product Name" 
-                    margin="normal" 
+                <TextField
+                    label="Product Name"
+                    margin="normal"
                     required
-                    value={formData.name} 
-                    onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
-                <TextField 
-                    label="Product Description" 
-                    margin="normal" 
+                <TextField
+                    label="Product Description"
+                    margin="normal"
                     multiline
                     minRows={4}
-                    value={formData.description} 
-                    onChange={(e) => setFormData({...formData, description: e.target.value})} 
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />
 
-                {/* <Autocomplete
-                    multiple
-                    value={selectedCategories}
-                    onChange={(event, newValue) => {
-                        console.log(newValue)
-
-                        const newCategories = newValue.map((value) => {
-                            if(typeof value === 'string') {
-                                let newCategory = Object.assign({ name: value.toLowerCase() })
-                                console.log({newCategory})
-
-                                // dispatch(addCategory(newCategory))
-            
-                                // fetch("/categories", {
-                                //     method: "POST",
-                                //     headers: {
-                                //         "Content-Type": "application/json"
-                                //     },
-                                //     body: JSON.stringify(newCategory)
-                                // })
-                                // .then((r) => r.json())
-                                // .then((data) => {
-                                //     dispatch(addCategory(data))
-                                //     newCategory = data
-                                // })
-
-                                return newCategory
-                            } else {
-                                return value
-                            }
-                        })
-
-                        // console.log(newValue.filter((value) => !value.includes(newCategories)))
-                        // const newCategories = newThings.filter((value) => {
-                        //     const isExisting = categories.some((option) => value.name === option.name)
-                        //     if(isExisting) return value
-                        //     else dispatch(addCategory(value))
-                        // })
-
-                        console.log({newCategories})
-                        setSelectedCategories(newCategories)
-                    }}
-                    id="categories"
-                    options={categories}
-                    // defaultValue={}
-                    getOptionLabel={(option) => {
-                        return option.name
-                    }}
-                    renderOption={(props, option) => <li {...props}>{option.name}</li>}
-                    freeSolo
-                    filterSelectedOptions
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip label={typeof option === 'string' ? option.toLowerCase() : option.name} {...getTagProps({ index })} />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Product Categories"
-                            margin="normal" 
-                            placeholder="Add Categories"
-                        />
-                    )}
-                /> */}
                 <Autocomplete
                     multiple
                     id="categories"
                     value={selectedCategories}
                     onChange={(event, newValue) => {
-                        // const newCategories = newValue.filter((value) => {
-                        //     if(typeof value === 'string') {
-                        //         const newCategory = Object.assign({ name: value })
-                        //         const findCategory = categories.find((category) => category.name === value)
-                        //         const isExisting = selectedCategories.some((category) => category.name === value)
-                        //         console.log({isExisting})
-                        //         if(findCategory && !isExisting) { 
-                        //             return findCategory
-                        //         }
-                        //         if(!findCategory && !isExisting) return newCategory
-                        //     } else {
-                        //         return value
-                        //     }
-                        // })
-                        // console.log(event.target.value)
-                        // const newCat = newValue.map((value) => typeof value)
-                        const selected = newValue.filter((value) => typeof value === 'object')
-                        const added = newValue.filter((value) => typeof value === 'string')
-                        const newCategories = added.map((value) => {
+                        const filterCategory = newValue.map((value) => {
+                            const isExisting = categories.some((option) => value === option.name)
                             const newCategory = Object.assign({ name: value })
                             const findCategory = categories.find((category) => category.name === value)
-                            if(findCategory) return findCategory
-                            return newCategory
+
+                            if (!isExisting && typeof value === 'string') {
+                                fetch("/categories", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify(newCategory)
+                                })
+                                    .then((r) => r.json())
+                                    .then((data) => {
+                                        dispatch(addCategory(data))
+                                    })
+
+                                return newCategory
+                            } else if (isExisting && typeof value === 'string') {
+                                return findCategory
+                            } else {
+                                return value
+                            }
                         })
-                        const filteredCategories = selected.concat(newCategories).filter((value, index, array) => array.indexOf(value) === index)
-                        // POST new category if no ID
-                        setSelectedCategories(filteredCategories)
+
+                        const uniqueCategory = filterCategory.filter((value, index, array) => array.indexOf(value) === index)
+
+                        // const doubleCheckCategories = uniqueCategory.map((selected) => {
+                        //     const findCategory = categories.find((category) => category.name === selected.name)
+                        //     if (findCategory) return findCategory
+                        //     else return selected
+                        // })
+
+                        // if(selectedCategories.length !== 0 && doubleCheckCategories !== uniqueCategory) {
+                        //     console.log("not matching", {selectedCategories}, {doubleCheckCategories}, {uniqueCategory})
+                        //     setSelectedCategories(doubleCheckCategories)
+                        // } else setSelectedCategories(uniqueCategory)
+
+                        setSelectedCategories(uniqueCategory)
                     }}
                     inputValue={categoryInput}
                     onInputChange={(event, newInput) => {
@@ -209,7 +154,7 @@ export default function ProductForm() {
                     filterSelectedOptions
                     renderTags={(value, getTagProps) =>
                         value.map((option, index) => (
-                            <Chip label={typeof option === 'string' ? option : option.name} {...getTagProps({ index })} />
+                            <Chip label={option.name} {...getTagProps({ index })} />
                         ))
                     }
                     renderInput={(params) => (
@@ -224,13 +169,13 @@ export default function ProductForm() {
 
                 <List
                     subheader={
-                        <ListSubheader 
-                        component="div" 
-                        sx={{ 
-                            borderBottomColor: "divider", 
-                            borderBottomStyle: "solid", 
-                            borderBottomWidth: 1 
-                        }}
+                        <ListSubheader
+                            component="div"
+                            sx={{
+                                borderBottomColor: "divider",
+                                borderBottomStyle: "solid",
+                                borderBottomWidth: 1
+                            }}
                         >
                             Added Images
                         </ListSubheader>
@@ -239,7 +184,7 @@ export default function ProductForm() {
                     {images.map((image) => (
                         <ListItem key={image.url}>
                             <ListItemIcon>
-                                <Checkbox 
+                                <Checkbox
                                     checked={images.includes(image)}
                                     onChange={() => {
                                         setImages(images.filter((img) => img !== image))
@@ -247,19 +192,19 @@ export default function ProductForm() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <ListItemText 
+                            <ListItemText
                                 primary={
                                     <Link to={image.url} target="_blank">
                                         <Typography color="text.secondary" noWrap>
                                             {image.url}
                                         </Typography>
                                     </Link>
-                                } 
+                                }
                             />
                         </ListItem>
                     ))}
                 </List>
-                <TextField 
+                <TextField
                     label="Product Images"
                     margin="normal"
                     value={image}
@@ -267,11 +212,11 @@ export default function ProductForm() {
                         setImage(event.target.value)
                     }}
                     placeholder="Add Images"
-                    InputProps={{ 
-                        endAdornment: 
+                    InputProps={{
+                        endAdornment:
                             <InputAdornment position="end">
-                                <Tooltip 
-                                    title="Add Image" 
+                                <Tooltip
+                                    title="Add Image"
                                     followCursor
                                     enterDelay={800} leaveDelay={300}
                                 >
@@ -279,7 +224,7 @@ export default function ProductForm() {
                                         size="small"
                                         aria-label="toggle password visibility"
                                         onClick={() => {
-                                            setImages([...images, Object.assign({ url: image })]) 
+                                            setImages([...images, Object.assign({ url: image })])
                                             setUrl(image)
                                             setImage("")
                                         }}
@@ -288,7 +233,7 @@ export default function ProductForm() {
                                         <AddIcon />
                                     </IconButton>
                                 </Tooltip>
-                            </InputAdornment> 
+                            </InputAdornment>
                     }}
                 />
 
@@ -296,30 +241,54 @@ export default function ProductForm() {
                     Add Product
                 </Button>
             </form>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-            >
+
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Ready to Submit?</DialogTitle>
+
                 <DialogContent>
-                    <DialogContentText>
-                        <Typography color="text.primary" variant="button">Name: </Typography>
+                    <DialogContentText 
+                        sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
+                    >
+                        <span>Name: </span>
                         {formData.name}
                     </DialogContentText>
-                    <DialogContentText>
-                        <Typography color="text.primary" variant="button">Description: </Typography>
+
+                    <DialogContentText 
+                        sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
+                    >
+                        <span>Description: </span>
                         {formData.description === "" ? "No Description" : formData.description}
                     </DialogContentText>
-                    <DialogContentText>
-                        <Typography color="text.primary" variant="button">Categories: </Typography>
-                        <ul style={{margin: 0}}>{selectedCategories.map((category) => <li>{category.name}</li>)}</ul>
+
+                    <DialogContentText 
+                        sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
+                    >
+                        <span>Categories: </span>
                     </DialogContentText>
-                    <DialogContentText>
-                        {/* Images: <ul>{images.map((image) => <li>{image.url}</li>)}</ul> */}
-                        <Typography color="text.primary" variant="button">Images: </Typography>
+                    {selectedCategories.length === 0 ? (
+                        <ul style={{ margin: 0, listStyle: "none" }}>
+                            <li>
+                                <DialogContentText>No Categories</DialogContentText>
+                            </li>
+                        </ul>
+                    ) : (
+                        <ul style={{ margin: 0, listStyle: "none" }}>
+                            {selectedCategories.map((category) => (
+                                <li key={category.id || category.name}>
+                                    <DialogContentText>{category.name}</DialogContentText>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    <DialogContentText 
+                        sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
+                    >
+                        <span>Images: </span>
                         {images.length === 0 ? "No Images" : images.length}
                     </DialogContentText>
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button variant="contained" onClick={handleSubmit} autoFocus>Confirm</Button>
