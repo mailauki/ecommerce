@@ -15,18 +15,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
   enable_extension "plpgsql"
 
   create_table "carts", force: :cascade do |t|
-    t.bigint "users_id", null: false
+    t.bigint "user_id", null: false
     t.bigint "products_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["products_id"], name: "index_carts_on_products_id"
-    t.index ["users_id"], name: "index_carts_on_users_id"
+    t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "categories_products", id: false, force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "category_id", null: false
   end
 
   create_table "images", force: :cascade do |t|
@@ -37,22 +42,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
     t.index ["products_id"], name: "index_images_on_products_id"
   end
 
-  create_table "product_categories", force: :cascade do |t|
-    t.bigint "products_id"
-    t.bigint "categories_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["categories_id"], name: "index_product_categories_on_categories_id"
-    t.index ["products_id"], name: "index_product_categories_on_products_id"
-  end
-
   create_table "products", force: :cascade do |t|
     t.string "name"
-    t.string "description"
-    t.bigint "users_id", null: false
+    t.text "description"
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["users_id"], name: "index_products_on_users_id"
+    t.index ["user_id"], name: "index_products_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -64,9 +60,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
   end
 
   add_foreign_key "carts", "products", column: "products_id"
-  add_foreign_key "carts", "users", column: "users_id"
+  add_foreign_key "carts", "users"
   add_foreign_key "images", "products", column: "products_id"
-  add_foreign_key "product_categories", "categories", column: "categories_id"
-  add_foreign_key "product_categories", "products", column: "products_id"
-  add_foreign_key "products", "users", column: "users_id"
+  add_foreign_key "products", "users"
 end

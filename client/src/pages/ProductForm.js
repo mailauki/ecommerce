@@ -44,20 +44,20 @@ export default function ProductForm() {
     }, [dispatch])
 
     function handleSubmit() {
-        // fetch("/products", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify(formData)
-        // })
-        // .then((r) => {
-        //     if(r.ok) {
-        //         r.json().then((data) => console.log(data))
-        //     } else {
-        //         r.json().then((data) => console.log(data.error))
-        //     }
-        // })
+        fetch("/products", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then((r) => {
+            if(r.ok) {
+                r.json().then((data) => console.log(data))
+            } else {
+                r.json().then((data) => console.log(data.error))
+            }
+        })
 
         setOpen(false)
 
