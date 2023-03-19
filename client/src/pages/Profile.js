@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { logout } from '../features/user/userSlice';
-import { Box, Button, Typography } from '@mui/material';
+import { Button, Typography, Stack, ImageList, ImageListItem, ImageListItemBar, CardActionArea } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
-import { Link } from 'react-router-dom';
 
 export default function Profile() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
     const errors = useSelector((state) => state.user.errors);
-    console.log(user)
+    // console.log(user)
 
     useEffect(() => {
         dispatch(fetchUser())
@@ -36,28 +36,27 @@ export default function Profile() {
     else if(!user) return <h1>No User Found</h1>
 
     return (
-        <Box 
+        <Stack 
+            direction="column"
+            justifyContent="space-evenly"
+            spacing={1}
             sx={{ 
-                display: "flex", 
-                flexDirection: "column", 
-                justifyContent: "space-evenly", 
-                button: { margin: 1 }, 
-                width: "100%"
+                width: "100%",
+                maxWidth: "800px"
             }}
         >
-            <Box 
-                sx={{ 
-                    display: "flex", 
-                    flexDirection: "row", 
-                    alignItems: "center", 
-                    justifyContent: "space-evenly" 
-                }}
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-evenly"
             >
                 <Typography variant="h5">{user.username}</Typography>
-                <Box>
+
+                <Stack>
                     <Typography variant="body2">Products</Typography>
                     <Typography variant="h6">0</Typography>
-                </Box>
+                </Stack>
+
                 <Button 
                     variant="outlined"
                     startIcon={<LogoutIcon />}
@@ -65,9 +64,9 @@ export default function Profile() {
                 >
                     Logout
                 </Button>
-            </Box>
+            </Stack>
 
-            <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Stack direction="row" justifyContent="space-evenly">
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
@@ -76,13 +75,14 @@ export default function Profile() {
                     Add Product
                 </Button>
 
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Stack direction="column" spacing={1}>
                     <Button 
                         variant="outlined"
                         startIcon={<ProfileIcon />}
                     >
                         Update Profile
                     </Button>
+
                     <Button 
                         variant="contained" 
                         color="error"
@@ -90,8 +90,39 @@ export default function Profile() {
                     >
                         Delete Account
                     </Button>
-                </Box>
-            </Box>
-        </Box>
+                </Stack>
+            </Stack>
+
+            <ImageList variant="masonry" cols={3} gap={8} sx={{ padding: 4 }}>
+                {user.products.map((product) => (
+                    <CardActionArea 
+                        sx={{ 
+                            "&:hover": { ".product-info": { display: "flex" } }, 
+                            mb: "8px"
+                        }} 
+                        component={Link} to={`/products/${product.id || product._id}`}
+                    >
+                        <ImageListItem style={{ marginBottom: 0 }}>
+                            <img 
+                                src={product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name}`}
+                                alt={product.name}
+                                loading="lazy"
+                            />
+                            <ImageListItemBar
+                                className="product-info"
+                                sx={{
+                                    background:
+                                        "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
+                                        "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+                                    display: "none"
+                                }}
+                                title={product.name}
+                                position="top"
+                            />
+                        </ImageListItem>
+                    </CardActionArea>
+                ))}
+            </ImageList>
+        </Stack>
     )
 }

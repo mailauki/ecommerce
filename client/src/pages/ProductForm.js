@@ -3,10 +3,8 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
 import "../styles/Form.css";
-import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, createFilterOptions, Stack, DialogContentText } from "@mui/material";
+import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, Stack, DialogContentText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-
-const filter = createFilterOptions();
 
 export default function ProductForm() {
     const { pathname } = useLocation();
