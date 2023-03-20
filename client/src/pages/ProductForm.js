@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
+import { addProduct } from "../features/products/productsSlice";
 import "../styles/Form.css";
-import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, Stack, DialogContentText } from "@mui/material";
+import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, Stack, DialogContentText, useFormControl } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function ProductForm() {
     const { pathname } = useLocation();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: "", description: "" });
+    const [formData, setFormData] = useState({ name: "", price: "", description: "" });
     const [images, setImages] = useState([]);
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("")
     const [selectedCategories, setSelectedCategories] = useState([]);
-    // const [categories, setCategories] = useState(null);
     const [categoryInput, setCategoryInput] = useState("");
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.categories.entities);
     const [open, setOpen] = useState(false);
+    const [priceFocus, setPriceFocus] = useState("endAdornment");
 
     function handleOpen(e) {
         e.preventDefault()
@@ -47,11 +48,14 @@ export default function ProductForm() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({name: formData.name, preice: parseFloat(formData.price), description: formData.description})
         })
         .then((r) => {
             if(r.ok) {
-                r.json().then((data) => console.log(data))
+                r.json().then((data) => {
+                    console.log(data)
+                    dispatch(addProduct(data))
+                })
             } else {
                 r.json().then((data) => console.log(data.error))
             }
@@ -65,12 +69,24 @@ export default function ProductForm() {
             else return selected
         }).filter((value, index, array) => array.indexOf(value) === index)
 
-        // if(selectedCategories.length !== 0 && doubleCheckCategories !== selectedCategories) {
-        //     console.log("not matching", {selectedCategories}, {doubleCheckCategories})
-        //     setSelectedCategories(doubleCheckCategories)
-        // }
+        console.log(parseFloat(formData.price))
 
         console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
+    }
+
+    function PriceAdornment() {
+        const { focused } = useFormControl() || {}
+        
+        const adornment = useMemo(() => {
+            if (focused) {
+                setPriceFocus("startAdornment")
+                return <InputAdornment position="start">$</InputAdornment>
+            } else {
+                setPriceFocus("endAdornment")
+            }
+        }, [focused])
+
+        return adornment
     }
 
     if (!categories) return <h1>Loading...</h1>
@@ -86,6 +102,16 @@ export default function ProductForm() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+                <TextField 
+                    label="Product Price"
+                    margin="normal"
+                    required
+                    InputProps={{
+                        [priceFocus]: <PriceAdornment />
+                    }}
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 />
                 <TextField
                     label="Product Description"
@@ -249,6 +275,13 @@ export default function ProductForm() {
                     >
                         <span>Name: </span>
                         {formData.name}
+                    </DialogContentText>
+
+                    <DialogContentText 
+                        sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
+                    >
+                        <span>Price: </span>
+                        ${formData.price}
                     </DialogContentText>
 
                     <DialogContentText 

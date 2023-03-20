@@ -96,11 +96,12 @@ export default function Profile() {
             <ImageList variant="masonry" cols={3} gap={8} sx={{ padding: 4 }}>
                 {user.products.map((product) => (
                     <CardActionArea 
+                        key={product.id}
                         sx={{ 
                             "&:hover": { ".product-info": { display: "flex" } }, 
                             mb: "8px"
                         }} 
-                        component={Link} to={`/products/${product.id || product._id}`}
+                        component={Link} to={`/products/${product.id}`}
                     >
                         <ImageListItem style={{ marginBottom: 0 }}>
                             <img 
