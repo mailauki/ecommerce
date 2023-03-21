@@ -61,8 +61,6 @@ export default function ProductForm() {
             }
         })
 
-        setOpen(false)
-
         const doubleCheckCategories = selectedCategories.map((selected) => {
             const findCategory = categories.find((category) => category.name === selected.name)
             if (findCategory) return findCategory
@@ -72,6 +70,10 @@ export default function ProductForm() {
         console.log(parseFloat(formData.price))
 
         console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
+
+        setOpen(false)
+
+        navigate("/me")
     }
 
     function PriceAdornment() {

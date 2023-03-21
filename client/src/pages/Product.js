@@ -9,44 +9,46 @@ export default function Product() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const product = useSelector((state) => state.product.entities);
-    const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name}`;
+    const { loading } = useSelector((state) => state.product);
 
     useEffect(() => {
         dispatch(fetchProductById(id))
-    }, [dispatch])
+    }, [dispatch, id])
 
-    if(!product) <h1>No Product</h1>
+
+    if(!product && !loading) return <h1>No Product</h1>
+    else if(loading) return <h1>Loading...</h1>
+
+    const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
 
     return (
-        <>
-            <Stack sx={{ width: "100%", maxWidth: "600px", textAlign: "left" }}>
-                <img src={image} alt={product.name} style={{ height: "200px", objectFit: "contain" }} />
+        <Stack sx={{ width: "100%", maxWidth: "600px", textAlign: "left" }}>
+            <img src={image} alt={product.name} style={{ height: "200px", objectFit: "contain" }} />
 
-                <Stack 
-                    direction="row" 
-                    alignItems="center" 
-                    justifyContent="space-evenly"
+            <Stack 
+                direction="row" 
+                alignItems="center" 
+                justifyContent="space-evenly"
+            >
+                <Typography variant="h4">{product.name}</Typography>
+
+                <Button
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                    component={Link} to={`/products/${id}/update`}
                 >
-                    <Typography variant="h4">{product.name}</Typography>
-
-                    <Button
-                        variant="contained"
-                        startIcon={<EditIcon />}
-                        component={Link} to={`/products/${id}/update`}
-                    >
-                        Edit
-                    </Button>
-                </Stack>
-
-                <Typography 
-                    variant="subtitle1" 
-                    component={Link} to={`/users/${product.user.id}`}
-                >
-                    From: {product.user.username}
-                </Typography>
-
-                <Typography variant="body1" paragraph>{product.description}</Typography>
+                    Edit
+                </Button>
             </Stack>
-        </>
+
+            <Typography 
+                variant="subtitle1" 
+                component={Link} to={`/users/${product.user.id}`}
+            >
+                From: {product.user.username}
+            </Typography>
+
+            <Typography variant="body1" paragraph>{product.description}</Typography>
+        </Stack>
     )
 }

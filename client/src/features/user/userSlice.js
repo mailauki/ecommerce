@@ -1,11 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchUser = createAsyncThunk("users/fetchUser", () => {
-    return (
-        fetch("/me")
-        .then((r) => r.json())
-        .then((data) => data)
-    )
+export const fetchUser = createAsyncThunk("users/fetchUser", (id) => {
+    if(id) {
+        return (
+            fetch(`/users/${id}`)
+            .then((r) => r.json())
+            .then((data) => data)
+        )
+    } else {
+        return (
+            fetch("/me")
+            .then((r) => r.json())
+            .then((data) => data)
+        )
+    }
 })
 
 const userSlice = createSlice({

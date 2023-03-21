@@ -1,8 +1,13 @@
 class UsersController < ApplicationController
-    skip_before_action :authorize, only: [:create]
+    skip_before_action :authorize, only: [:show, :create]
 
     def me
         user = @current_user
+        render json: user
+    end
+
+    def show
+        user = find_user
         render json: user
     end
 
@@ -13,6 +18,10 @@ class UsersController < ApplicationController
     end
 
     private
+
+    def find_user
+        User.find(params[:id])
+    end
 
     def user_params
         params.permit(:username, :password, :password_confirmation)

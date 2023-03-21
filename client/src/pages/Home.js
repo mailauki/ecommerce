@@ -9,6 +9,7 @@ export default function Home() {
     // const [products, setProducts] = useState(null);
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.entities);
+    const { loading } = useSelector((state) => state.products);
 
     // useEffect(() => {
     //     fetch('https://api.storerestapi.com/products?limit=10')
@@ -20,10 +21,11 @@ export default function Home() {
         dispatch(fetchProducts())
     }, [dispatch])
 
-    if(!products) return <h1>No Products</h1>
+    if(!products && !loading) return <h1>No Products</h1>
+    if(loading) return <h1>Loading...</h1>
 
-    // const gridProducts = products.filter((product, index) => index < 3) // change indexes to featured or random
-    // const sliderProducts = products.filter((product, index) => index > 2 && index < 10)
+    const gridProducts = products.length > 0 ? products.slice(0, 3) : []
+    const sliderProducts = products.length > 0 ? products.slice(3) : []
     
     return (
         <>
@@ -33,13 +35,13 @@ export default function Home() {
                 cols={2}
                 rowHeight={200}
             >
-                {/* {gridProducts.map((product, index) => (
+                {gridProducts.map((product, index) => (
                     <ProductCard key={product.id || product._id} product={product} index={index} grid />
-                ) )} */}
+                ) )}
             </ImageList>
 
             <Box sx={{ width: "100%", overflowX: "scroll" }}>
-                {/* <ImageList
+                <ImageList
                     sx={{ 
                         width: `calc(200px * ${sliderProducts.length})`
                     }}
@@ -50,18 +52,8 @@ export default function Home() {
                     {sliderProducts.map((product, index) => (
                         <ProductCard key={product.id || product._id} product={product} index={index} />
                     ))}
-                </ImageList> */}
+                </ImageList>
             </Box>
-
-            {/* <div className="grid">
-                {gridProducts.map((product) => <ProductCard key={product._id} product={product} />)}
-            </div> */}
-
-            {/* <div style={{ width: "100vw", overflow: "hidden" }}>
-                <div className="slider">
-                    {sliderProducts.map((product, index) => <ProductCard key={product._id} product={product} index={index} />)}
-                </div>
-            </div> */}
         </>
     )
 }

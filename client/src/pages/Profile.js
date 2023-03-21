@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { logout } from '../features/user/userSlice';
@@ -10,14 +10,19 @@ import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
 
 export default function Profile() {
+    const { id } = useParams();
+    const { pathname } = useLocation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
     const errors = useSelector((state) => state.user.errors);
     // console.log(user)
+    // console.log(pathname)
+    // console.log(id)
 
     useEffect(() => {
-        dispatch(fetchUser())
-    }, [dispatch]);
+        if(pathname === "/me") dispatch(fetchUser())
+        else dispatch(fetchUser(id))
+    }, [dispatch, pathname, id]);
 
     function handleLogout() {
         fetch("/logout", {
@@ -54,7 +59,7 @@ export default function Profile() {
 
                 <Stack>
                     <Typography variant="body2">Products</Typography>
-                    <Typography variant="h6">0</Typography>
+                    <Typography variant="h6">{user.products_total || 0}</Typography>
                 </Stack>
 
                 <Button 
