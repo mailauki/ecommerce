@@ -8,14 +8,6 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", () => {
     )
 })
 
-export const fetchProductById = createAsyncThunk("products/fetchProductById", (id) => {
-    return (
-        fetch(`/products/${id}`)
-        .then((r) => r.json())
-        .then((data) => data)
-    )
-})
-
 const productsSlice = createSlice({
     name: "products",
     initialState: {
@@ -25,8 +17,14 @@ const productsSlice = createSlice({
     },
     reducers: {
         addProduct(state, action) {
-            state.entities.push(action.payload)
+            const products = state.entities
+            products.push(action.payload)
         },
+        editProduct(state, action) {
+            const products = state.entities
+            const index = products.findIndex((product) => product.id === action.payload.id)
+            products.splice(index, 1)
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchProducts.pending, (state) => {
@@ -42,21 +40,8 @@ const productsSlice = createSlice({
             }
             state.loading = false
         })
-        builder.addCase(fetchProductById.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(fetchProductById.fulfilled, (state, action) => {
-            if(action.payload.errors) {
-                state.entities = null
-                state.errors = action.payload.errors
-            } else {
-                state.entities = action.payload
-                state.errors = null
-            }
-            state.loading = false
-        })
     }
 })
 
-export const { addProduct } = productsSlice.actions
+export const { addProduct, editProduct } = productsSlice.actions
 export default productsSlice.reducer

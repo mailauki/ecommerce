@@ -16,6 +16,12 @@ class ProductsController < ApplicationController
         render json: product, status: :created
     end
 
+    def update
+        product = find_product
+        product.update!(product_params)
+        render json: product
+    end
+
     private
 
     def find_product
@@ -23,6 +29,6 @@ class ProductsController < ApplicationController
     end
 
     def product_params
-        params.permit(:name, :description, :user_id)
+        params.permit(:name, :price, :description, :user_id)
     end
 end

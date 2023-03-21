@@ -1,25 +1,31 @@
 import { useEffect, useState, useMemo } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
-import { addProduct } from "../features/products/productsSlice";
+import { addProduct, editProduct } from "../features/products/productsSlice";
 import "../styles/Form.css";
 import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Dialog, DialogTitle, DialogActions, DialogContent, Tooltip, Stack, DialogContentText, useFormControl } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { fetchProductById } from "../features/products/productSlice";
 
 export default function ProductForm() {
     const { pathname } = useLocation();
+    const { id } = useParams();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: "", price: "", description: "" });
-    const [images, setImages] = useState([]);
+    const product = useSelector((state) => state.product.entities);
+    const [formData, setFormData] = useState({ name: product.name || "", price: product.price || "", description: product.description || "" });
+    const [images, setImages] = useState(product.images || []);
     const [image, setImage] = useState("");
-    const [url, setUrl] = useState("")
-    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [url, setUrl] = useState("");
+    const [selectedCategories, setSelectedCategories] = useState(product.categories || []);
     const [categoryInput, setCategoryInput] = useState("");
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.categories.entities);
     const [open, setOpen] = useState(false);
     const [priceFocus, setPriceFocus] = useState("endAdornment");
+
+    // console.log(id)
+    // console.log(product)
 
     function handleOpen(e) {
         e.preventDefault()
@@ -42,24 +48,13 @@ export default function ProductForm() {
         dispatch(fetchCategories())
     }, [dispatch])
 
+    useEffect(() => {
+        if(id) dispatch(fetchProductById(id))
+        // else dispatch(fetchUser(id))
+    }, [dispatch, id]);
+
     function handleSubmit() {
-        fetch("/products", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({name: formData.name, preice: parseFloat(formData.price), description: formData.description})
-        })
-        .then((r) => {
-            if(r.ok) {
-                r.json().then((data) => {
-                    console.log(data)
-                    dispatch(addProduct(data))
-                })
-            } else {
-                r.json().then((data) => console.log(data.error))
-            }
-        })
+        const parseFormData = {name: formData.name, price: parseFloat(formData.price), description: formData.description}
 
         const doubleCheckCategories = selectedCategories.map((selected) => {
             const findCategory = categories.find((category) => category.name === selected.name)
@@ -67,9 +62,49 @@ export default function ProductForm() {
             else return selected
         }).filter((value, index, array) => array.indexOf(value) === index)
 
-        console.log(parseFloat(formData.price))
+        // console.log(parseFloat(formData.price))
 
-        console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
+        // console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
+
+        if(id) {
+            console.log("update", parseFormData)
+
+            fetch(`/products/${id}"`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(parseFormData)
+            })
+            .then((r) => {
+                if(r.ok) {
+                    r.json().then((data) => {
+                        console.log(data)
+                        dispatch(editProduct(data))
+                    })
+                } else {
+                    r.json().then((data) => console.log(data.error))
+                }
+            })
+        } else {
+            fetch("/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(parseFormData)
+            })
+            .then((r) => {
+                if(r.ok) {
+                    r.json().then((data) => {
+                        console.log(data)
+                        dispatch(addProduct(data))
+                    })
+                } else {
+                    r.json().then((data) => console.log(data.error))
+                }
+            })
+        }
 
         setOpen(false)
 
@@ -264,7 +299,7 @@ export default function ProductForm() {
                 />
 
                 <Button variant="contained" type="submit" className="submit">
-                    Add Product
+                    {pathname === "/add" ? "Add Product" : "Update Product" }
                 </Button>
             </form>
 

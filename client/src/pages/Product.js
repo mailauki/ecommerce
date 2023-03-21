@@ -21,6 +21,8 @@ export default function Product() {
 
     const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
 
+    console.log(product)
+
     return (
         <Stack sx={{ width: "100%", maxWidth: "600px", textAlign: "left" }}>
             <img src={image} alt={product.name} style={{ height: "200px", objectFit: "contain" }} />
@@ -28,7 +30,7 @@ export default function Product() {
             <Stack 
                 direction="row" 
                 alignItems="center" 
-                justifyContent="space-evenly"
+                justifyContent="space-between"
             >
                 <Typography variant="h4">{product.name}</Typography>
 
@@ -41,12 +43,26 @@ export default function Product() {
                 </Button>
             </Stack>
 
-            <Typography 
-                variant="subtitle1" 
-                component={Link} to={`/users/${product.user.id}`}
+            <Stack 
+                direction="row" 
+                alignItems="center" 
+                justifyContent="space-between"
             >
-                From: {product.user.username}
-            </Typography>
+                <Stack>
+                    <Typography variant="h6">${product.price}</Typography>
+
+                    <Typography 
+                        variant="subtitle1" 
+                        color="text.secondary"
+                        component={Link} to={`/users/${product.user.id}`}
+                    >
+                        @{product.user.username}
+                    </Typography>
+
+                </Stack>
+
+                <Button variant="outlined">Add to Cart</Button>
+            </Stack>
 
             <Typography variant="body1" paragraph>{product.description}</Typography>
         </Stack>
