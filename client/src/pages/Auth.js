@@ -13,6 +13,8 @@ export default function Auth() {
 
     const handleClickShowPassword = () => setShowPassword((show) => !show)
 
+    console.log(errors)
+
     function handleAuth(event) {
         event.preventDefault()
 

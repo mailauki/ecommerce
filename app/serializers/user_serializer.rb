@@ -2,5 +2,7 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :username, :products_total
 
   has_many :products
-  has_one :cart
+  has_many :carts
+  # has_many :cart_products, through: :carts
+  has_many :cart_products, through: :carts, source: :products
 end

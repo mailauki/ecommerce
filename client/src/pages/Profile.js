@@ -99,35 +99,39 @@ export default function Profile() {
             </Stack>
 
             <ImageList variant="masonry" cols={3} gap={8} sx={{ padding: 4 }}>
-                {user.products.map((product) => (
-                    <CardActionArea 
-                        key={product.id}
-                        sx={{ 
-                            "&:hover": { ".product-info": { display: "flex" } }, 
-                            mb: "8px"
-                        }} 
-                        component={Link} to={`/products/${product.id}`}
-                    >
-                        <ImageListItem style={{ marginBottom: 0 }}>
-                            <img 
-                                src={product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name}`}
-                                alt={product.name}
-                                loading="lazy"
-                            />
-                            <ImageListItemBar
-                                className="product-info"
-                                sx={{
-                                    background:
-                                        "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-                                        "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-                                    display: "none"
-                                }}
-                                title={product.name}
-                                position="top"
-                            />
-                        </ImageListItem>
-                    </CardActionArea>
-                ))}
+                {user.products && user.products.length > 0 ? (
+                    user.products.map((product) => (
+                        <CardActionArea 
+                            key={product.id}
+                            sx={{ 
+                                "&:hover": { ".product-info": { display: "flex" } }, 
+                                mb: "8px"
+                            }} 
+                            component={Link} to={`/products/${product.id}`}
+                        >
+                            <ImageListItem style={{ marginBottom: 0 }}>
+                                <img 
+                                    src={product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name}`}
+                                    alt={product.name}
+                                    loading="lazy"
+                                />
+                                <ImageListItemBar
+                                    className="product-info"
+                                    sx={{
+                                        background:
+                                            "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
+                                            "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+                                        display: "none"
+                                    }}
+                                    title={product.name}
+                                    position="top"
+                                />
+                            </ImageListItem>
+                        </CardActionArea>
+                    ))
+                ) : (
+                    <></>
+                )}
             </ImageList>
         </Stack>
     )

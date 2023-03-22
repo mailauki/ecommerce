@@ -15,17 +15,42 @@ export default function Product() {
         dispatch(fetchProductById(id))
     }, [dispatch, id])
 
+    function handleAddToCart() {
+        console.log(id)
+
+        fetch("/carts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({product_id: id})
+        })
+        .then((r) => r.json())
+        .then((data) => console.log(data))
+    }
+
 
     if(!product && !loading) return <h1>No Product</h1>
     else if(loading) return <h1>Loading...</h1>
 
     const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
 
-    console.log(product)
+    // console.log(product)
 
     return (
-        <Stack sx={{ width: "100%", maxWidth: "600px", textAlign: "left" }}>
-            <img src={image} alt={product.name} style={{ height: "200px", objectFit: "contain" }} />
+        <Stack 
+            sx={{ 
+                width: "100%", 
+                maxWidth: "600px", 
+                textAlign: "left", 
+                padding: 2 
+            }}
+        >
+            <img 
+                src={image} 
+                alt={product.name} 
+                style={{ height: "200px", objectFit: "contain" }} 
+            />
 
             <Stack 
                 direction="row" 
@@ -61,7 +86,7 @@ export default function Product() {
 
                 </Stack>
 
-                <Button variant="outlined">Add to Cart</Button>
+                <Button variant="outlined" onClick={handleAddToCart}>Add to Cart</Button>
             </Stack>
 
             <Typography variant="body1" paragraph>{product.description}</Typography>

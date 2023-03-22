@@ -16,10 +16,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
 
   create_table "carts", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "products_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["products_id"], name: "index_carts_on_products_id"
+    t.index ["product_id"], name: "index_carts_on_product_id"
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
@@ -36,10 +36,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
 
   create_table "images", force: :cascade do |t|
     t.string "url"
-    t.bigint "products_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["products_id"], name: "index_images_on_products_id"
+    t.index ["product_id"], name: "index_images_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -60,8 +60,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "carts", "products", column: "products_id"
+  add_foreign_key "carts", "products"
   add_foreign_key "carts", "users"
-  add_foreign_key "images", "products", column: "products_id"
+  add_foreign_key "images", "products"
   add_foreign_key "products", "users"
 end
