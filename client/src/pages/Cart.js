@@ -4,10 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { Avatar, Card, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 export default function Cart() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.entities);
+  let [count, setCount] = useState(1);
 
     useEffect(() => {
       dispatch(fetchUser())
@@ -34,15 +37,37 @@ export default function Cart() {
         {user.cart_products.map((product) => (
           <ListItem
             secondaryAction={
-              <IconButton edge="end" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
+              <Stack alignItems="flex-end">
+                <Stack direction="row" alignItems="center" justifyContent="center">
+                  <IconButton 
+                    aria-label="remove" 
+                    disabled={count < 2} 
+                    onClick={() => setCount(count -= 1)}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                  <Typography>{count}</Typography> 
+                  <IconButton 
+                    edge="end" 
+                    aria-label="add" 
+                    onClick={() => setCount(count += 1)}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Stack>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </Stack>
             }
           >
             <ListItemAvatar>
               <Avatar variant="square" sx={{ width: 80, height: 80, mr: 2 }} />
             </ListItemAvatar>
-            <ListItemText primary={product.name} secondary={`$${product.price}`} />
+            <ListItemText 
+              primary={product.name} 
+              secondary={`$${product.price} * ${count} = $${product.price * count}`} 
+            />
           </ListItem>
         ))}
       </List>
