@@ -19,7 +19,7 @@ export default function CartButton() {
 
     return (
         <IconButton onClick={() => navigate("/cart")}>
-            <Badge badgeContent={user.cart_products.length || 0} color="primary">
+            <Badge badgeContent={user.cart_total || 0} color="primary">
                 <CartIcon />
             </Badge>
         </IconButton>

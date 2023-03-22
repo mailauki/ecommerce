@@ -2,7 +2,7 @@ import { Stack } from '@mui/system';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
-import { Avatar, Card, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, Card, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Cart() {
@@ -13,7 +13,7 @@ export default function Cart() {
       dispatch(fetchUser())
   }, [dispatch]);
 
-  if(!user || !user.cart_products || user.cart_products.length === 0) {
+  if(!user || !user.cart_products || user.cart_total === 0) {
     return <h1>No Products in Cart</h1>
   }
 
@@ -46,6 +46,13 @@ export default function Cart() {
           </ListItem>
         ))}
       </List>
+
+      <Divider />
+      
+      <Stack direction="row" alignItems="center" justifyContent="center">
+        <Typography variant="h6" color="text.secondary" sx={{ mr: 1, textTransform: "uppercase" }}>Total:</Typography>
+        <Typography variant="h5">${user.cart_price_total}</Typography>
+      </Stack>
     </Stack>
   )
 }
