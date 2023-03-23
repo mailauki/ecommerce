@@ -10,6 +10,7 @@ export default function Product() {
     const dispatch = useDispatch();
     const product = useSelector((state) => state.product.entities);
     const { loading } = useSelector((state) => state.product);
+    const user = useSelector((state) => state.user.entities);
 
     useEffect(() => {
         dispatch(fetchProductById(id))
@@ -36,6 +37,8 @@ export default function Product() {
     const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
 
     // console.log(product)
+    // console.log(user.cart_products.find((cart) => cart.product.id === parseInt(id)))
+    const disableAddToCart = user ? user.cart_products.find((cart) => cart.product.id === parseInt(id)) ? true : false : false
 
     return (
         <Stack 
@@ -86,7 +89,13 @@ export default function Product() {
 
                 </Stack>
 
-                <Button variant="outlined" onClick={handleAddToCart}>Add to Cart</Button>
+                <Button 
+                    variant="outlined" 
+                    disabled={disableAddToCart}
+                    onClick={handleAddToCart}
+                >
+                    {disableAddToCart ? "In Cart" : "Add to Cart"}
+                </Button>
             </Stack>
 
             <Typography variant="body1" paragraph>{product.description}</Typography>
