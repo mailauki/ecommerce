@@ -1,5 +1,4 @@
 class CartsController < ApplicationController
-  skip_before_action :authorize, only: [:index, :destroy]
 
     def index
         carts = Cart.all
@@ -9,6 +8,17 @@ class CartsController < ApplicationController
     def create
         cart = @current_user.carts.create!(cart_params)
         render json: cart, status: :created
+    end
+
+    def show
+        cart = find_cart
+        render json: cart
+    end
+
+    def update
+        cart = find_cart
+        cart.update!(cart_params)
+        render json: cart
     end
 
     def destroy
@@ -24,6 +34,6 @@ class CartsController < ApplicationController
     end
 
     def cart_params
-        params.permit(:user_id, :product_id)
+        params.permit(:user_id, :product_id, :quantity)
     end
 end

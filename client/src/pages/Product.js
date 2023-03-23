@@ -23,7 +23,7 @@ export default function Product() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({product_id: id})
+            body: JSON.stringify({product_id: id, quantity: 1})
         })
         .then((r) => r.json())
         .then((data) => console.log(data))

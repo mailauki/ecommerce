@@ -13,11 +13,14 @@ export default function ProductForm() {
     const { id } = useParams();
     const navigate = useNavigate();
     const product = useSelector((state) => state.product.entities);
-    const [formData, setFormData] = useState({ name: product.name || "", price: product.price || "", description: product.description || "" });
-    const [images, setImages] = useState(product.images || []);
+    // const [formData, setFormData] = useState({ name: product.name || "", price: product.price || "", description: product.description || "" });
+    const [name, setName] = useState("");
+    const [price, setPrice] = useState("");
+    const [description, setDescription] = useState("");
+    const [images, setImages] = useState([]);
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("");
-    const [selectedCategories, setSelectedCategories] = useState(product.categories || []);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [categoryInput, setCategoryInput] = useState("");
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.categories.entities);
@@ -49,12 +52,16 @@ export default function ProductForm() {
     }, [dispatch])
 
     useEffect(() => {
-        if(id) dispatch(fetchProductById(id))
-        // else dispatch(fetchUser(id))
-    }, [dispatch, id]);
+        if(id) {
+            dispatch(fetchProductById(id))
+            setName(product.name)
+            setPrice(product.price)
+            setDescription(product.description)
+        }
+    }, [dispatch, id, product]);
 
     function handleSubmit() {
-        const parseFormData = {name: formData.name, price: parseFloat(formData.price), description: formData.description}
+        const formData = {name: name, price: parseFloat(price), description: description}
 
         const doubleCheckCategories = selectedCategories.map((selected) => {
             const findCategory = categories.find((category) => category.name === selected.name)
@@ -67,14 +74,12 @@ export default function ProductForm() {
         // console.log({ formData }, { selectedCategories }, { doubleCheckCategories }, { images })
 
         if(id) {
-            console.log("update", parseFormData)
-
             fetch(`/products/${id}"`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(parseFormData)
+                body: JSON.stringify(formData)
             })
             .then((r) => {
                 if(r.ok) {
@@ -92,13 +97,14 @@ export default function ProductForm() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(parseFormData)
+                body: JSON.stringify(formData)
             })
             .then((r) => {
                 if(r.ok) {
                     r.json().then((data) => {
                         console.log(data)
                         dispatch(addProduct(data))
+                        // dispatch add to user product total
                     })
                 } else {
                     r.json().then((data) => console.log(data.error))
@@ -131,14 +137,14 @@ export default function ProductForm() {
     return (
         <>
             <form className="Form" onSubmit={handleOpen}>
-                <img src={url} alt={formData.name} style={{ height: "300px", objectFit: "contain", display: !url ? "none" : "" }} />
+                <img src={url} alt={name} style={{ height: "300px", objectFit: "contain", display: !url ? "none" : "" }} />
 
                 <TextField
                     label="Product Name"
                     margin="normal"
                     required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
                 <TextField 
                     label="Product Price"
@@ -147,16 +153,16 @@ export default function ProductForm() {
                     InputProps={{
                         [priceFocus]: <PriceAdornment />
                     }}
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
                 />
                 <TextField
                     label="Product Description"
                     margin="normal"
                     multiline
                     minRows={4}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
 
                 <Autocomplete
@@ -299,7 +305,7 @@ export default function ProductForm() {
                 />
 
                 <Button variant="contained" type="submit" className="submit">
-                    {pathname === "/add" ? "Add Product" : "Update Product" }
+                    {pathname === "/products/add" ? "Add Product" : "Update Product" }
                 </Button>
             </form>
 
@@ -311,21 +317,21 @@ export default function ProductForm() {
                         sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
                     >
                         <span>Name: </span>
-                        {formData.name}
+                        {name}
                     </DialogContentText>
 
                     <DialogContentText 
                         sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
                     >
                         <span>Price: </span>
-                        ${formData.price}
+                        ${price}
                     </DialogContentText>
 
                     <DialogContentText 
                         sx={{ "span": { color: "text.primary", textTransform: "uppercase" }}}
                     >
                         <span>Description: </span>
-                        {formData.description === "" ? "No Description" : formData.description}
+                        {description === "" ? "No Description" : description}
                     </DialogContentText>
 
                     <DialogContentText 
