@@ -33,6 +33,24 @@ const userSlice = createSlice({
             state.entities = null
             state.loading = false
             state.errors = null
+        },
+        increaseQuantity(state, action) {
+            const user = state.entities
+            const cart = user.cart_products.find((cart) => cart.id === action.payload)
+            cart.quantity = cart.quantity + 1
+
+            user.cart_total = user.cart_total + 1
+
+            user.cart_price_total = parseFloat((user.cart_price_total + cart.product.price).toFixed(2))
+        },
+        decreaseQuantity(state, action) {
+            const user = state.entities
+            const cart = user.cart_products.find((cart) => cart.id === action.payload)
+            cart.quantity = cart.quantity - 1
+
+            user.cart_total = user.cart_total - 1
+
+            user.cart_price_total = parseFloat((user.cart_price_total - cart.product.price).toFixed(2))
         }
     },
     extraReducers: (builder) => {
@@ -52,5 +70,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { auth, logout } = userSlice.actions
+export const { auth, logout, increaseQuantity, decreaseQuantity } = userSlice.actions
 export default userSlice.reducer

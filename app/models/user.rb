@@ -20,6 +20,6 @@ class User < ApplicationRecord
     end
 
     def cart_price_total
-        self.carts.sum { |cart_product| self.carts_products.find { |product| product.id === cart_product.product_id }.price * cart_product.quantity }
+        self.carts.sum { |cart_product| self.carts_products.find { |product| product.id === cart_product.product_id }.price * cart_product.quantity }.round(2)
     end
 end

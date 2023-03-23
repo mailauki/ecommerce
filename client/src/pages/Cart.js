@@ -1,16 +1,18 @@
 import { Stack } from '@mui/system';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../features/user/userSlice';
-import { Avatar, Card, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { fetchUser, increaseQuantity, decreaseQuantity } from '../features/user/userSlice';
+import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import CartIcon from '@mui/icons-material/LocalMall';
 
 export default function Cart() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.entities);
-  let [count, setCount] = useState(1);
+
+  // console.log(user)
 
     useEffect(() => {
       dispatch(fetchUser())
@@ -29,7 +31,10 @@ export default function Cart() {
       body: JSON.stringify({quantity: cart_product.quantity + 1})
     })
     .then((r) => r.json())
-    .then((data) => console.log(data))
+    .then((data) => {
+      console.log(data)
+      dispatch(increaseQuantity(data.id))
+    })
   }
 
   function handleDecreaseQuantity(cart_product) {
@@ -41,7 +46,10 @@ export default function Cart() {
       body: JSON.stringify({quantity: cart_product.quantity - 1})
     })
     .then((r) => r.json())
-    .then((data) => console.log(data))
+    .then((data) => {
+      console.log(data)
+      dispatch(decreaseQuantity(data.id))
+    })
   }
 
   if(!user || !user.carts_products || user.cart_total === 0) {
@@ -61,7 +69,7 @@ export default function Cart() {
     >
       <List>
         {user.cart_products.map((cart_product) => {
-          const cart_product_price_total = cart_product.product.price * cart_product.quantity
+          const cart_product_price_total = (cart_product.product.price * cart_product.quantity).toFixed(2)
 
           return (
             <ListItem
@@ -72,7 +80,6 @@ export default function Cart() {
                     <IconButton 
                       aria-label="remove" 
                       disabled={cart_product.quantity < 2} 
-                      // onClick={() => setCount(count -= 1)}
                       onClick={() => handleDecreaseQuantity(cart_product)}
                     >
                       <RemoveIcon />
@@ -81,7 +88,6 @@ export default function Cart() {
                     <IconButton 
                       edge="end" 
                       aria-label="add" 
-                      // onClick={() => setCount(count += 1)}
                       onClick={() => handleIncreaseQuantity(cart_product)}
                     >
                       <AddIcon />
@@ -99,7 +105,9 @@ export default function Cart() {
               }
             >
               <ListItemAvatar>
-                <Avatar variant="square" sx={{ width: 80, height: 80, mr: 2 }} />
+                <Avatar variant="square" sx={{ width: 80, height: 80, mr: 2 }}>
+                  <CartIcon sx={{ fontSize: 34 }} />
+                </Avatar>
               </ListItemAvatar>
               <ListItemText 
                 primary={cart_product.product.name} 
