@@ -13,6 +13,7 @@ export default function Product() {
     const user = useSelector((state) => state.user.entities);
     const [image, setImage] = useState("https://dummyimage.com/640x640/ccc/555/&text=image")
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [disableCart, setDisableCart] = useState(false)
 
     const handleImageClick = (image, index) => {
         setSelectedIndex(index)
@@ -37,6 +38,17 @@ export default function Product() {
         }
     }, [product, selectedIndex])
 
+    useEffect(() => {
+        if(user) {
+            const disableAddToCart = user.cart_products.find((cart) => cart.product.id === parseInt(id))
+            if(disableAddToCart) {
+                setDisableCart(true)
+            } else {
+                setDisableCart(false)
+            }
+        }
+    }, [id, user])
+
     function handleAddToCart() {
         console.log(id)
 
@@ -54,11 +66,6 @@ export default function Product() {
 
     if(!product && !loading) return <h1>No Product</h1>
     else if(loading) return <h1>Loading...</h1>
-
-    // const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
-
-    console.log(product)
-    const disableAddToCart = user ? user.cart_products.find((cart) => cart.product.id === parseInt(id)) ? true : false : false
 
     return (
         <Stack 
@@ -141,10 +148,10 @@ export default function Product() {
 
                 <Button 
                     variant="outlined" 
-                    disabled={disableAddToCart}
+                    disabled={disableCart}
                     onClick={handleAddToCart}
                 >
-                    {disableAddToCart ? "In Cart" : "Add to Cart"}
+                    {disableCart ? "In Cart" : "Add to Cart"}
                 </Button>
             </Stack>
 
