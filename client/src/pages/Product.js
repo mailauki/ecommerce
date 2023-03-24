@@ -36,8 +36,7 @@ export default function Product() {
 
     const image = product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`
 
-    // console.log(product)
-    // console.log(user.cart_products.find((cart) => cart.product.id === parseInt(id)))
+    console.log(product)
     const disableAddToCart = user ? user.cart_products.find((cart) => cart.product.id === parseInt(id)) ? true : false : false
 
     return (

@@ -43,9 +43,8 @@ export default function ProductForm() {
     // 1 https://images.unsplash.com/photo-1618354691438-25bc04584c23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
     // 2 https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
     // 3 https://images.unsplash.com/photo-1618354691229-88d47f285158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
-    // 4 https://images.unsplash.com/photo-1618354691229-88d47f285158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
-    // 5 https://images.unsplash.com/photo-1618354691321-e851c56960d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
-    // 6 https://images.unsplash.com/photo-1618354691714-7d92150909db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80
+    // 4 https://images.unsplash.com/photo-1618354691321-e851c56960d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80
+    // 5 https://images.unsplash.com/photo-1618354691714-7d92150909db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80
 
     useEffect(() => {
         dispatch(fetchCategories())
@@ -54,11 +53,17 @@ export default function ProductForm() {
     useEffect(() => {
         if(id) {
             dispatch(fetchProductById(id))
+        }
+    }, [dispatch, id])
+
+    useEffect(() => {
+        if(product && id) {
             setName(product.name)
             setPrice(product.price)
             setDescription(product.description)
+            setImages(product.images)
         }
-    }, [dispatch, id, product]);
+    }, [product, id])
 
     function handleSubmit() {
         const formData = {name: name, price: parseFloat(price), description: description}
@@ -85,7 +90,50 @@ export default function ProductForm() {
                 if(r.ok) {
                     r.json().then((data) => {
                         console.log(data)
-                        dispatch(editProduct(data))
+                        // dispatch(editProduct(data))
+
+                        if(images.length > 0) {
+                            // adds to db if in form and not in db
+                            const newImages = images.filter((image) => {
+                                const match = product.images.find((product_image) => product_image.url === image.url)
+                                return (
+                                    match ? null : image
+                                )
+                            }).flat()
+
+                            newImages.map((image) => {
+                                return (
+                                    fetch("/images", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({url: image.url, product_id: data.id})
+                                    })
+                                    .then((r) => r.json())
+                                    .then((data) => console.log(data))
+                                )
+                            })
+
+                            // removes from db if in db and not in form
+                            const removeImages = product.images.filter((image) => {
+                                const match = images.find((product_image) => product_image.url === image.url)
+                                return (
+                                    match ? null : image
+                                )
+                            }).flat()
+
+                            removeImages.map((image) => {
+                                return (
+                                    fetch(`/images/${image.id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        }
+                                    })
+                                )
+                            })
+                        }
                     })
                 } else {
                     r.json().then((data) => console.log(data.error))

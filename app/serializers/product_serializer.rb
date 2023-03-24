@@ -3,5 +3,6 @@ class ProductSerializer < ActiveModel::Serializer
 
   belongs_to :user
 
+  has_many :images
   has_many :carts
 end
