@@ -36,7 +36,7 @@ const userSlice = createSlice({
         },
         increaseQuantity(state, action) {
             const user = state.entities
-            const cart = user.cart_products.find((cart) => cart.id === action.payload)
+            const cart = user.carts.find((cart) => cart.id === action.payload)
             cart.quantity = cart.quantity + 1
 
             user.cart_total = user.cart_total + 1
@@ -45,7 +45,7 @@ const userSlice = createSlice({
         },
         decreaseQuantity(state, action) {
             const user = state.entities
-            const cart = user.cart_products.find((cart) => cart.id === action.payload)
+            const cart = user.carts.find((cart) => cart.id === action.payload)
             cart.quantity = cart.quantity - 1
 
             user.cart_total = user.cart_total - 1

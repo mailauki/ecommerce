@@ -52,7 +52,7 @@ export default function Cart() {
     })
   }
 
-  if(!user || !user.carts_products || user.cart_total === 0) {
+  if(!user || !user.carts || user.cart_total === 0) {
     return <h1>No Products in Cart</h1>
   }
 
@@ -68,7 +68,7 @@ export default function Cart() {
       }}
     >
       <List>
-        {user.cart_products.map((cart_product) => {
+        {user.carts.map((cart_product) => {
           const cart_product_price_total = (cart_product.product.price * cart_product.quantity).toFixed(2)
 
           return (
@@ -105,7 +105,12 @@ export default function Cart() {
               }
             >
               <ListItemAvatar>
-                <Avatar variant="square" sx={{ width: 80, height: 80, mr: 2 }}>
+                <Avatar 
+                  variant="square" 
+                  sx={{ width: 80, height: 80, mr: 2 }} 
+                  src={cart_product.product.images[0].url} 
+                  alt={cart_product.product.name}
+                >
                   <CartIcon sx={{ fontSize: 34 }} />
                 </Avatar>
               </ListItemAvatar>

@@ -6,16 +6,9 @@ import ProductCard from "../components/ProductCard";
 import { Box, ImageList } from "@mui/material";
 
 export default function Home() {
-    // const [products, setProducts] = useState(null);
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.entities);
     const { loading } = useSelector((state) => state.products);
-
-    // useEffect(() => {
-    //     fetch('https://api.storerestapi.com/products?limit=10')
-    //     .then((r) => r.json())
-    //     .then((data) => setProducts(data.data))
-    // }, [])
 
     useEffect(() => {
         dispatch(fetchProducts())
@@ -25,7 +18,7 @@ export default function Home() {
     if(loading) return <h1>Loading...</h1>
 
     const gridProducts = products.length > 0 ? products.slice(0, 3) : []
-    const sliderProducts = products.length > 0 ? products.slice(3) : []
+    const sliderProducts = products.length > 3 ? products.slice(3) : []
     
     return (
         <>
@@ -36,7 +29,7 @@ export default function Home() {
                 rowHeight={200}
             >
                 {gridProducts.map((product, index) => (
-                    <ProductCard key={product.id || product._id} product={product} index={index} grid />
+                    <ProductCard key={product.id} product={product} index={index} grid />
                 ) )}
             </ImageList>
 
@@ -50,7 +43,7 @@ export default function Home() {
                     rowHeight={200}
                 >
                     {sliderProducts.map((product, index) => (
-                        <ProductCard key={product.id || product._id} product={product} index={index} />
+                        <ProductCard key={product.id} product={product} index={index} />
                     ))}
                 </ImageList>
             </Box>

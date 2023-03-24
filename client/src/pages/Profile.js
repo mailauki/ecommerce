@@ -3,11 +3,12 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { logout } from '../features/user/userSlice';
-import { Button, Typography, Stack, ImageList, ImageListItem, ImageListItemBar, CardActionArea } from '@mui/material';
+import { Button, Typography, Stack, ImageList, ImageListItem, ImageListItemBar, CardActionArea, Box } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
+import ProfileCard from '../components/ProfileCard';
 
 export default function Profile() {
     const { id } = useParams();
@@ -47,15 +48,16 @@ export default function Profile() {
             spacing={1}
             sx={{ 
                 width: "100%",
-                maxWidth: "800px"
+                maxWidth: "600px",
+                padding: 2
             }}
         >
             <Stack
                 direction="row"
                 alignItems="center"
-                justifyContent="space-evenly"
+                justifyContent="space-between"
             >
-                <Typography variant="h5">{user.username}</Typography>
+                <Typography variant="h5">@{user.username}</Typography>
 
                 <Stack>
                     <Typography variant="body2">Products</Typography>
@@ -66,12 +68,17 @@ export default function Profile() {
                     variant="outlined"
                     startIcon={<LogoutIcon />}
                     onClick={handleLogout}
+                    sx={{ opacity: pathname === "/me" ? 1 : 0 }}
                 >
                     Logout
                 </Button>
             </Stack>
 
-            <Stack direction="row" justifyContent="space-evenly">
+            <Stack 
+                direction="row" 
+                justifyContent="space-between"
+                sx={{ display: pathname === "/me" ? "" : "none" }}
+            >
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
@@ -101,33 +108,34 @@ export default function Profile() {
             <ImageList variant="masonry" cols={3} gap={8} sx={{ padding: 4 }}>
                 {user.products && user.products.length > 0 ? (
                     user.products.map((product) => (
-                        <CardActionArea 
-                            key={product.id}
-                            sx={{ 
-                                "&:hover": { ".product-info": { display: "flex" } }, 
-                                mb: "8px"
-                            }} 
-                            component={Link} to={`/products/${product.id}`}
-                        >
-                            <ImageListItem style={{ marginBottom: 0 }}>
-                                <img 
-                                    src={product.images ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name}`}
-                                    alt={product.name}
-                                    loading="lazy"
-                                />
-                                <ImageListItemBar
-                                    className="product-info"
-                                    sx={{
-                                        background:
-                                            "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-                                            "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-                                        display: "none"
-                                    }}
-                                    title={product.name}
-                                    position="top"
-                                />
-                            </ImageListItem>
-                        </CardActionArea>
+                        // <CardActionArea 
+                        //     key={product.id}
+                        //     sx={{ 
+                        //         "&:hover": { ".product-info": { display: "flex" } }, 
+                        //         mb: "8px"
+                        //     }} 
+                        //     component={Link} to={`/products/${product.id}`}
+                        // >
+                        //     <ImageListItem style={{ marginBottom: 0 }}>
+                        //         <img 
+                        //             src={product.images && product.images.length > 0 ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`}
+                        //             alt={product.name}
+                        //             loading="lazy"
+                        //         />
+                        //         <ImageListItemBar
+                        //             className="product-info"
+                        //             sx={{
+                        //                 background:
+                        //                     "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
+                        //                     "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+                        //                 display: "none"
+                        //             }}
+                        //             title={product.name}
+                        //             position="top"
+                        //         />
+                        //     </ImageListItem>
+                        // </CardActionArea>
+                        <ProfileCard key={product.id} product={product} />
                     ))
                 ) : (
                     <></>

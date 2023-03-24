@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById } from "../features/products/productSlice";
+import { fetchUser } from "../features/user/userSlice";
 import { Link, useParams } from "react-router-dom";
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemButton, Stack, Typography } from "@mui/material";
+import { Avatar, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function Product() {
@@ -11,7 +12,7 @@ export default function Product() {
     const product = useSelector((state) => state.product.entities);
     const { loading } = useSelector((state) => state.product);
     const user = useSelector((state) => state.user.entities);
-    const [image, setImage] = useState("https://dummyimage.com/640x640/ccc/555/&text=image")
+    const [image, setImage] = useState("https://dummyimage.com/640x640/ccc/555/&text=image");
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [disableCart, setDisableCart] = useState(false)
 
@@ -21,6 +22,7 @@ export default function Product() {
 
     useEffect(() => {
         dispatch(fetchProductById(id))
+        dispatch(fetchUser())
     }, [dispatch, id])
 
     useEffect(() => {
@@ -28,7 +30,7 @@ export default function Product() {
             if(product.name) {
                 setImage(`https://dummyimage.com/640x640/ccc/555/&text=${product.name}`)
             }
-            if(product.images) {
+            if(product.images && product.images.length > 0) {
                 setImage(product.images[0].url)
 
                 if(product.images.length > 1) {
@@ -40,18 +42,17 @@ export default function Product() {
 
     useEffect(() => {
         if(user) {
-            const disableAddToCart = user.cart_products.find((cart) => cart.product.id === parseInt(id))
+            const disableAddToCart = user.carts.find((cart) => cart.product.id === parseInt(id))
             if(disableAddToCart) {
                 setDisableCart(true)
             } else {
                 setDisableCart(false)
             }
+            // 
         }
     }, [id, user])
 
     function handleAddToCart() {
-        console.log(id)
-
         fetch("/carts", {
             method: "POST",
             headers: {
@@ -92,7 +93,11 @@ export default function Product() {
                         sx={{ mt: 1, mb: 1 }}
                     >
                         {product.images.map((image, index) => (
-                            <ListItem disablePadding sx={{ width: "fit-content" }}>
+                            <ListItem 
+                                key={image.id} 
+                                disablePadding 
+                                sx={{ width: "fit-content" }}
+                            >
                                 <ListItemButton 
                                     sx={{ width: "fit-content" }} 
                                     selected={selectedIndex === index}
@@ -123,6 +128,8 @@ export default function Product() {
                     variant="contained"
                     startIcon={<EditIcon />}
                     component={Link} to={`/products/${id}/update`}
+                    disabled={product.user.id !== user.id}
+                    sx={{ display: product.user.id !== user.id ? "none" : "" }}
                 >
                     Edit
                 </Button>
@@ -134,7 +141,7 @@ export default function Product() {
                 justifyContent="space-between"
             >
                 <Stack>
-                    <Typography variant="h6">${product.price}</Typography>
+                    <Typography variant="h6">${product.price.toFixed(2)}</Typography>
 
                     <Typography 
                         variant="subtitle1" 

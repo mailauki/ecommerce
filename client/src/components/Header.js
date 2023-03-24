@@ -27,7 +27,7 @@ export default function Header() {
                         "&:hover": { textDecoration: "none", color: "primary.main" } 
                     }}
                 >
-                    Header
+                    E-Commerce
                 </Typography>
 
                 {user ? (

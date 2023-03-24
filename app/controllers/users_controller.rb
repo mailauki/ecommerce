@@ -8,12 +8,12 @@ class UsersController < ApplicationController
 
     def me
         user = @current_user
-        render json: user
+        render json: user, include: ["products", "products.images", "carts", "carts.product", "carts.product.images"]
     end
 
     def show
         user = find_user
-        render json: user
+        render json: user, include: ["products", "products.images"]
     end
 
     def create

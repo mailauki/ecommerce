@@ -153,6 +153,22 @@ export default function ProductForm() {
                         console.log(data)
                         dispatch(addProduct(data))
                         // dispatch add to user product total
+                        
+                        if(images.length > 0) {
+                            images.map((image) => {
+                                return (
+                                    fetch("/images", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({url: image.url, product_id: data.id})
+                                    })
+                                    .then((r) => r.json())
+                                    .then((data) => console.log(data))
+                                )
+                            })
+                        }
                     })
                 } else {
                     r.json().then((data) => console.log(data.error))
