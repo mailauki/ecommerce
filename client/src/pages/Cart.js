@@ -1,21 +1,19 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser, increaseQuantity, decreaseQuantity } from '../features/user/userSlice';
+import { fetchCurrentUser } from '../features/user/currentUserSlice';
 import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import CartIcon from '@mui/icons-material/LocalMall';
 import Container from '../components/Container';
 import Counter from '../components/Counter';
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.entities);
+  const user = useSelector((state) => state.currentUser.entities);
 
     useEffect(() => {
-      dispatch(fetchUser())
+      dispatch(fetchCurrentUser())
   }, [dispatch]);
 
   function handleDeleteCartProduct(id) {

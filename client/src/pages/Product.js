@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById } from "../features/products/productSlice";
-import { fetchUser } from "../features/user/userSlice";
+import { fetchCurrentUser } from "../features/user/currentUserSlice";
 import { Link, useParams } from "react-router-dom";
 import { Avatar, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,7 +12,7 @@ export default function Product() {
     const dispatch = useDispatch();
     const product = useSelector((state) => state.product.entities);
     const { loading } = useSelector((state) => state.product);
-    const user = useSelector((state) => state.user.entities);
+    const user = useSelector((state) => state.currentUser.entities);
     const [image, setImage] = useState("https://dummyimage.com/640x640/ccc/555/&text=image");
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [disableCart, setDisableCart] = useState(false)
@@ -22,8 +22,10 @@ export default function Product() {
     }
 
     useEffect(() => {
-        dispatch(fetchProductById(id))
-        dispatch(fetchUser())
+        if(id) {
+            dispatch(fetchProductById(id))
+        }
+        dispatch(fetchCurrentUser())
     }, [dispatch, id])
 
     useEffect(() => {
@@ -49,7 +51,6 @@ export default function Product() {
             } else {
                 setDisableCart(false)
             }
-            // 
         }
     }, [id, user])
 
@@ -122,8 +123,8 @@ export default function Product() {
                     variant="contained"
                     startIcon={<EditIcon />}
                     component={Link} to={`/products/${id}/update`}
-                    disabled={product.user.id !== user.id}
-                    sx={{ display: product.user.id !== user.id ? "none" : "" }}
+                    disabled={user ? product.user.id !== user.id : false}
+                    sx={{ display: user ? product.user.id !== user.id ? "none" : "" : ""}}
                 >
                     Edit
                 </Button>

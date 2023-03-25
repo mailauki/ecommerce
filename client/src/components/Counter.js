@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { increaseQuantity, decreaseQuantity } from '../features/user/userSlice';
+import { increaseQuantity, decreaseQuantity } from '../features/user/currentUserSlice';
 import { Stack, IconButton, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';

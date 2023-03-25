@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
-import { logout } from '../features/user/userSlice';
+import { fetchCurrentUser } from '../features/user/currentUserSlice';
+import { logout } from '../features/user/currentUserSlice';
 import { Button, Typography, Stack, ImageList, ImageListItem, ImageListItemBar, CardActionArea, Box } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
@@ -15,15 +16,23 @@ export default function Profile() {
     const { id } = useParams();
     const { pathname } = useLocation();
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.entities);
+    const [userType, setUserType] = useState("currentUser");
+    const user = useSelector((state) => state[userType].entities);
+    // const currentUser = useSelector((state) => state.currentUser.entities)
     const errors = useSelector((state) => state.user.errors);
     // console.log(user)
     // console.log(pathname)
     // console.log(id)
 
     useEffect(() => {
-        if(pathname === "/me") dispatch(fetchUser())
-        else dispatch(fetchUser(id))
+        if(pathname === "/me") {
+            dispatch(fetchCurrentUser())
+            setUserType("currentUser")
+        } 
+        if(id) {
+            dispatch(fetchUser(id))
+            setUserType("user")
+        }
     }, [dispatch, pathname, id]);
 
     function handleLogout() {

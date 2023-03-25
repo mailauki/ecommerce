@@ -1,19 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchUser = createAsyncThunk("users/fetchUser", (id) => {
-    if(id) {
-        return (
-            fetch(`/users/${id}`)
-            .then((r) => r.json())
-            .then((data) => data)
-        )
-    } else {
-        return (
-            fetch("/me")
-            .then((r) => r.json())
-            .then((data) => data)
-        )
-    }
+    return (
+        fetch(`/users/${id}`)
+        .then((r) => r.json())
+        .then((data) => data)
+    )
 })
 
 const userSlice = createSlice({
@@ -24,34 +16,6 @@ const userSlice = createSlice({
         errors: null
     },
     reducers: {
-        auth(state, action) {
-            state.entities = action.payload
-            state.loading = false
-            state.errors = null
-        },
-        logout(state, action) {
-            state.entities = null
-            state.loading = false
-            state.errors = null
-        },
-        increaseQuantity(state, action) {
-            const user = state.entities
-            const cart = user.carts.find((cart) => cart.id === action.payload)
-            cart.quantity = cart.quantity + 1
-
-            user.cart_total = user.cart_total + 1
-
-            user.cart_price_total = parseFloat((user.cart_price_total + cart.product.price).toFixed(2))
-        },
-        decreaseQuantity(state, action) {
-            const user = state.entities
-            const cart = user.carts.find((cart) => cart.id === action.payload)
-            cart.quantity = cart.quantity - 1
-
-            user.cart_total = user.cart_total - 1
-
-            user.cart_price_total = parseFloat((user.cart_price_total - cart.product.price).toFixed(2))
-        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUser.pending, (state) => {
@@ -70,5 +34,4 @@ const userSlice = createSlice({
     }
 })
 
-export const { auth, logout, increaseQuantity, decreaseQuantity } = userSlice.actions
 export default userSlice.reducer
