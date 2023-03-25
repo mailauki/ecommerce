@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCurrentUser } from '../features/user/currentUserSlice';
+import { fetchCurrentUser, removeCart } from '../features/user/currentUserSlice';
 import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CartIcon from '@mui/icons-material/LocalMall';
@@ -18,6 +18,11 @@ export default function Cart() {
 
   function handleDeleteCartProduct(id) {
     console.log("delete", id)
+
+    fetch(`/carts/${id}`, {
+      method: "DELETE"
+    })
+    dispatch(removeCart(id))
   }
 
   if(!user || !user.carts || user.cart_total === 0) {

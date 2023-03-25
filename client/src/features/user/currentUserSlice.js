@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchCurrentUser = createAsyncThunk("users/fetchCurrentUser", () => {
-  return (
-      fetch("/me")
-      .then((r) => r.json())
-      .then((data) => data)
-  )
+    return (
+        fetch("/me")
+        .then((r) => r.json())
+        .then((data) => data)
+    )
 })
 
 const currentUserSlice = createSlice({
@@ -43,6 +43,21 @@ const currentUserSlice = createSlice({
             user.cart_total = user.cart_total - 1
 
             user.cart_price_total = parseFloat((user.cart_price_total - cart.product.price).toFixed(2))
+        },
+        addCart(state, action) {
+            const user = state.entities
+            user.carts.push(action.payload)
+
+            user.cart_total = user.cart_total + 1
+        },
+        removeCart(state, action) {
+            const user = state.entities
+            const cart = user.carts.find((cart) => cart.id === action.payload)
+
+            user.cart_total = user.cart_total - cart.quantity
+
+            const index = user.carts.findIndex((cart) => cart.id === action.payload)
+            user.carts.splice(index, 1)
         }
     },
     extraReducers: (builder) => {
@@ -62,5 +77,5 @@ const currentUserSlice = createSlice({
     }
 })
 
-export const { auth, logout, increaseQuantity, decreaseQuantity } = currentUserSlice.actions
+export const { auth, logout, increaseQuantity, decreaseQuantity, addCart, removeCart } = currentUserSlice.actions
 export default currentUserSlice.reducer

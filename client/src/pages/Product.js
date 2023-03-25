@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById } from "../features/products/productSlice";
-import { fetchCurrentUser } from "../features/user/currentUserSlice";
+import { fetchCurrentUser, addCart } from "../features/user/currentUserSlice";
 import { Link, useParams } from "react-router-dom";
 import { Avatar, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -63,7 +63,10 @@ export default function Product() {
             body: JSON.stringify({product_id: id, quantity: 1})
         })
         .then((r) => r.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+            console.log(data)
+            dispatch(addCart(data))
+        })
     }
 
 

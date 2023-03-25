@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { fetchCurrentUser } from '../features/user/currentUserSlice';
 import { logout } from '../features/user/currentUserSlice';
-import { Button, Typography, Stack, ImageList, ImageListItem, ImageListItemBar, CardActionArea, Box } from '@mui/material';
+import { Button, Typography, Stack, ImageList } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
@@ -18,7 +18,7 @@ export default function Profile() {
     const dispatch = useDispatch();
     const [userType, setUserType] = useState("currentUser");
     const user = useSelector((state) => state[userType].entities);
-    // const currentUser = useSelector((state) => state.currentUser.entities)
+    const currentUser = useSelector((state) => state.currentUser.entities)
     const errors = useSelector((state) => state.user.errors);
     // console.log(user)
     // console.log(pathname)
@@ -69,7 +69,7 @@ export default function Profile() {
                     variant="outlined"
                     startIcon={<LogoutIcon />}
                     onClick={handleLogout}
-                    sx={{ opacity: pathname === "/me" ? 1 : 0 }}
+                    sx={{ opacity: pathname === "/me" || parseInt(id) === currentUser.id ? 1 : 0 }}
                 >
                     Logout
                 </Button>
@@ -78,7 +78,7 @@ export default function Profile() {
             <Stack 
                 direction="row" 
                 justifyContent="space-between"
-                sx={{ display: pathname === "/me" ? "" : "none" }}
+                sx={{ display: pathname === "/me" || parseInt(id) === currentUser.id ? "" : "none" }}
             >
                 <Button
                     variant="contained"
