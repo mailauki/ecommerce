@@ -15,6 +15,8 @@ export default function Header() {
         dispatch(fetchUser())
     }, [dispatch]);
 
+    console.log(user)
+
     return (
         <AppBar position="static" color="divider">
             <Toolbar>

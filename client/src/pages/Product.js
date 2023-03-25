@@ -5,6 +5,7 @@ import { fetchUser } from "../features/user/userSlice";
 import { Link, useParams } from "react-router-dom";
 import { Avatar, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import Container from "../components/Container";
 
 export default function Product() {
     const { id } = useParams();
@@ -69,14 +70,7 @@ export default function Product() {
     else if(loading) return <h1>Loading...</h1>
 
     return (
-        <Stack 
-            sx={{ 
-                width: "100%", 
-                maxWidth: "600px", 
-                textAlign: "left", 
-                padding: 2 
-            }}
-        >
+        <Container align="left">
             <Stack>
                 <img 
                     src={image} 
@@ -163,6 +157,7 @@ export default function Product() {
             </Stack>
 
             <Typography variant="body1" paragraph>{product.description}</Typography>
-        </Stack>
+        </Container>
+        // </Stack>
     )
 }

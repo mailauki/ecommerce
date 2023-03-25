@@ -1,18 +1,18 @@
-import { Stack } from '@mui/system';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, increaseQuantity, decreaseQuantity } from '../features/user/userSlice';
-import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CartIcon from '@mui/icons-material/LocalMall';
+import Container from '../components/Container';
+import Counter from '../components/Counter';
 
 export default function Cart() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.entities);
-
-  // console.log(user)
 
     useEffect(() => {
       dispatch(fetchUser())
@@ -22,51 +22,12 @@ export default function Cart() {
     console.log("delete", id)
   }
 
-  function handleIncreaseQuantity(cart_product) {
-    fetch(`/carts/${cart_product.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({quantity: cart_product.quantity + 1})
-    })
-    .then((r) => r.json())
-    .then((data) => {
-      console.log(data)
-      dispatch(increaseQuantity(data.id))
-    })
-  }
-
-  function handleDecreaseQuantity(cart_product) {
-    fetch(`/carts/${cart_product.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({quantity: cart_product.quantity - 1})
-    })
-    .then((r) => r.json())
-    .then((data) => {
-      console.log(data)
-      dispatch(decreaseQuantity(data.id))
-    })
-  }
-
   if(!user || !user.carts || user.cart_total === 0) {
     return <h1>No Products in Cart</h1>
   }
 
   return (
-    <Stack 
-      direction="column"
-      justifyContent="space-evenly"
-      spacing={1}
-      sx={{ 
-          width: "100%",
-          maxWidth: "600px",
-          padding: 2
-      }}
-    >
+    <Container>
       <List>
         {user.carts.map((cart_product) => {
           const cart_product_price_total = (cart_product.product.price * cart_product.quantity).toFixed(2)
@@ -74,25 +35,10 @@ export default function Cart() {
           return (
             <ListItem
               key={cart_product.product.id}
+              disablePadding
               secondaryAction={
                 <Stack alignItems="flex-end">
-                  <Stack direction="row" alignItems="center" justifyContent="center">
-                    <IconButton 
-                      aria-label="remove" 
-                      disabled={cart_product.quantity < 2} 
-                      onClick={() => handleDecreaseQuantity(cart_product)}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography>{cart_product.quantity}</Typography> 
-                    <IconButton 
-                      edge="end" 
-                      aria-label="add" 
-                      onClick={() => handleIncreaseQuantity(cart_product)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Stack>
+                  <Counter cart_product={cart_product} />
 
                   <IconButton 
                     edge="end" 
@@ -104,20 +50,25 @@ export default function Cart() {
                 </Stack>
               }
             >
-              <ListItemAvatar>
-                <Avatar 
-                  variant="square" 
-                  sx={{ width: 80, height: 80, mr: 2 }} 
-                  src={cart_product.product.images[0].url} 
-                  alt={cart_product.product.name}
-                >
-                  <CartIcon sx={{ fontSize: 34 }} />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText 
-                primary={cart_product.product.name} 
-                secondary={`$${cart_product.product.price} * ${cart_product.quantity} = $${cart_product_price_total}`} 
-              />
+              <ListItemButton 
+                component={Link} to={`/products/${cart_product.product.id}`}
+              >
+                <ListItemAvatar>
+                  <Avatar 
+                    variant="square" 
+                    sx={{ width: 80, height: 80, mr: 2 }} 
+                    src={cart_product.product.images[0].url} 
+                    alt={cart_product.product.name}
+                  >
+                    <CartIcon sx={{ fontSize: 34 }} />
+                  </Avatar>
+                </ListItemAvatar>
+
+                <ListItemText 
+                  primary={cart_product.product.name} 
+                  secondary={`$${cart_product.product.price} * ${cart_product.quantity} = $${cart_product_price_total}`} 
+                />
+              </ListItemButton>
             </ListItem>
           )
         } )}
@@ -126,9 +77,15 @@ export default function Cart() {
       <Divider />
       
       <Stack direction="row" alignItems="center" justifyContent="center">
-        <Typography variant="h6" color="text.secondary" sx={{ mr: 1, textTransform: "uppercase" }}>Total:</Typography>
+        <Typography 
+          variant="h6" 
+          color="text.secondary" 
+          sx={{ mr: 1, textTransform: "uppercase" }}
+        >
+          Total:
+        </Typography>
         <Typography variant="h5">${user.cart_price_total}</Typography>
       </Stack>
-    </Stack>
+    </Container>
   )
 }

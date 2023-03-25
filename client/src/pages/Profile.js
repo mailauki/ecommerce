@@ -9,6 +9,7 @@ import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
 import ProfileCard from '../components/ProfileCard';
+import Container from '../components/Container';
 
 export default function Profile() {
     const { id } = useParams();
@@ -42,16 +43,7 @@ export default function Profile() {
     else if(!user) return <h1>No User Found</h1>
 
     return (
-        <Stack 
-            direction="column"
-            justifyContent="space-evenly"
-            spacing={1}
-            sx={{ 
-                width: "100%",
-                maxWidth: "600px",
-                padding: 2
-            }}
-        >
+        <Container>
             <Stack
                 direction="row"
                 alignItems="center"
@@ -108,39 +100,12 @@ export default function Profile() {
             <ImageList variant="masonry" cols={3} gap={8} sx={{ padding: 4 }}>
                 {user.products && user.products.length > 0 ? (
                     user.products.map((product) => (
-                        // <CardActionArea 
-                        //     key={product.id}
-                        //     sx={{ 
-                        //         "&:hover": { ".product-info": { display: "flex" } }, 
-                        //         mb: "8px"
-                        //     }} 
-                        //     component={Link} to={`/products/${product.id}`}
-                        // >
-                        //     <ImageListItem style={{ marginBottom: 0 }}>
-                        //         <img 
-                        //             src={product.images && product.images.length > 0 ? product.images[0].url : `https://dummyimage.com/640x640/ccc/555/&text=${product.name || "image"}`}
-                        //             alt={product.name}
-                        //             loading="lazy"
-                        //         />
-                        //         <ImageListItemBar
-                        //             className="product-info"
-                        //             sx={{
-                        //                 background:
-                        //                     "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-                        //                     "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-                        //                 display: "none"
-                        //             }}
-                        //             title={product.name}
-                        //             position="top"
-                        //         />
-                        //     </ImageListItem>
-                        // </CardActionArea>
                         <ProfileCard key={product.id} product={product} />
                     ))
                 ) : (
                     <></>
                 )}
             </ImageList>
-        </Stack>
+        </Container>
     )
 }

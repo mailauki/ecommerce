@@ -6,12 +6,9 @@ import { Badge, IconButton } from '@mui/material';
 import CartIcon from '@mui/icons-material/LocalMall';
 
 export default function CartButton() {
-    let [count, setCount] = useState(0);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.entities);
-
-    // console.log(user.cart_products)
 
     useEffect(() => {
         dispatch(fetchUser())
