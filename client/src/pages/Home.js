@@ -44,13 +44,13 @@ export default function Home() {
     
     return (
         <Box sx={{ width: "100%", mt: "65px", mb: "30px", p: 4 }}>
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" flexWrap="wrap">
                 <Chip 
                     key={0} 
                     label="all" 
                     onClick={() => setSelected(0)} 
                     variant={selected === 0 ? "filled" : "outlined"} 
-                    sx={{ minWidth: "60px" }}
+                    sx={{ minWidth: "60px", m: 0.5 }}
                 />
                 {categories.map((category) => (
                     <Chip 
@@ -58,7 +58,7 @@ export default function Home() {
                         label={category.name} 
                         onClick={() => setSelected(category.id)} 
                         variant={selected === category.id ? "filled" : "outlined"} 
-                        sx={{ minWidth: "60px" }}
+                        sx={{ minWidth: "60px", m: 0.5 }}
                     />
                 ) )}
             </Stack>

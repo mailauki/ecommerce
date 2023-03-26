@@ -4,8 +4,8 @@ export default function Container({ children, align, justify }) {
   return (
     <Stack
       direction="column"
-      alignItems={justify}
-      justifyContent={justify || "space-evenly"}
+      alignItems={align}
+      justifyContent={justify || "space-between"}
       spacing={1}
       sx={{ 
         width: "100%",
