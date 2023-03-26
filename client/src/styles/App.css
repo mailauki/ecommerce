@@ -5,3 +5,34 @@
   align-items: center;
   min-height: 100vh;
 }
+
+.Product {
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .Product {
+    flex-direction: column;
+  }
+
+  .Product .product-images {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .Product .product-images {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .Product .product-images .images {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}

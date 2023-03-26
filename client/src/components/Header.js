@@ -16,7 +16,7 @@ export default function Header() {
     }, [dispatch]);
 
     return (
-        <AppBar position="static" color="divider">
+        <AppBar position="fixed" color="divider">
             <Toolbar>
                 <Typography 
                     variant="h6" 

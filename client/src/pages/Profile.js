@@ -69,7 +69,7 @@ export default function Profile() {
                     variant="outlined"
                     startIcon={<LogoutIcon />}
                     onClick={handleLogout}
-                    sx={{ opacity: pathname === "/me" || parseInt(id) === currentUser.id ? 1 : 0 }}
+                    sx={{ opacity: pathname === "/me" || currentUser ? parseInt(id) === currentUser.id ? 1 : 0 : 0 }}
                 >
                     Logout
                 </Button>
@@ -78,7 +78,7 @@ export default function Profile() {
             <Stack 
                 direction="row" 
                 justifyContent="space-between"
-                sx={{ display: pathname === "/me" || parseInt(id) === currentUser.id ? "" : "none" }}
+                sx={{ display: pathname === "/me" || currentUser ? parseInt(id) === currentUser.id ? "" : "none" : "none" }}
             >
                 <Button
                     variant="contained"

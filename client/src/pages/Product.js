@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById } from "../features/products/productSlice";
 import { fetchCurrentUser, addCart } from "../features/user/currentUserSlice";
 import { Link, useParams } from "react-router-dom";
-import { Avatar, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import Container from "../components/Container";
 
 export default function Product() {
     const { id } = useParams();
@@ -51,6 +50,8 @@ export default function Product() {
             } else {
                 setDisableCart(false)
             }
+        } else {
+            setDisableCart(true)
         }
     }, [id, user])
 
@@ -74,21 +75,39 @@ export default function Product() {
     else if(loading) return <h1>Loading...</h1>
 
     return (
-        <Container align="left">
-            <Stack>
+        <Box 
+            sx={{ 
+                width: "100%", 
+                maxWidth: "1200px", 
+                p: 2, 
+                mt: "65px",
+                textAlign: "left"
+            }}
+            className="Product"
+        >
+            <Stack 
+                direction="row" 
+                sx={{ flexGrow: 2 }} 
+                className="product-images"
+            >
                 <img 
                     src={image} 
                     alt={product.name} 
-                    style={{ height: "200px", objectFit: "contain" }} 
+                    style={{ 
+                        height: "100%", 
+                        maxHeight: "80vh", 
+                        width: "calc(100% - 112px)", 
+                        objectFit: "contain" 
+                    }} 
                 />
                 
                 {product.images.length > 1 ? (
                     <Stack 
-                        direction="row" 
+                        direction="column" 
                         flexWrap="wrap" 
                         alignItems="center"
-                        justifyContent="center"
-                        sx={{ mt: 1, mb: 1 }}
+                        justifyContent="flex-start"
+                        className="images"
                     >
                         {product.images.map((image, index) => (
                             <ListItem 
@@ -115,53 +134,56 @@ export default function Product() {
                 )}
             </Stack>
 
-            <Stack 
-                direction="row" 
-                alignItems="center" 
-                justifyContent="space-between"
-            >
-                <Typography variant="h4">{product.name}</Typography>
-
-                <Button
-                    variant="contained"
-                    startIcon={<EditIcon />}
-                    component={Link} to={`/products/${id}/update`}
-                    disabled={user ? product.user.id !== user.id : false}
-                    sx={{ display: user ? product.user.id !== user.id ? "none" : "" : ""}}
+            <Stack sx={{ p: 2, flexGrow: 1, minWidth: "350px" }}>
+                <Stack 
+                    direction="row" 
+                    alignItems="center" 
+                    justifyContent="space-between"
                 >
-                    Edit
-                </Button>
-            </Stack>
+                    <Typography variant="h4">{product.name}</Typography>
 
-            <Stack 
-                direction="row" 
-                alignItems="center" 
-                justifyContent="space-between"
-            >
-                <Stack>
-                    <Typography variant="h6">${product.price.toFixed(2)}</Typography>
-
-                    <Typography 
-                        variant="subtitle1" 
-                        color="text.secondary"
-                        component={Link} to={`/users/${product.user.id}`}
+                    <Button
+                        variant="contained"
+                        startIcon={<EditIcon />}
+                        component={Link} to={`/products/${id}/update`}
+                        disabled={user ? product.user.id === user.id : true}
+                        sx={{ display: user ? product.user.id === user.id ? "" : "none" : "none" }}
                     >
-                        @{product.user.username}
-                    </Typography>
-
+                        Edit
+                    </Button>
                 </Stack>
 
-                <Button 
-                    variant="outlined" 
-                    disabled={disableCart}
-                    onClick={handleAddToCart}
+                <Stack 
+                    direction="row" 
+                    alignItems="center" 
+                    justifyContent="space-between"
                 >
-                    {disableCart ? "In Cart" : "Add to Cart"}
-                </Button>
-            </Stack>
+                    <Stack>
+                        <Typography variant="h6">${product.price.toFixed(2)}</Typography>
 
-            <Typography variant="body1" paragraph>{product.description}</Typography>
-        </Container>
-        // </Stack>
+                        <Typography 
+                            variant="subtitle1" 
+                            color="text.secondary"
+                            component={Link} to={`/users/${product.user.id}`}
+                        >
+                            @{product.user.username}
+                        </Typography>
+
+                    </Stack>
+
+                    <Button 
+                        variant="outlined" 
+                        disabled={disableCart}
+                        onClick={handleAddToCart}
+                    >
+                        {disableCart ? user ? "In Cart" : "No Cart" : "Add to Cart"}
+                    </Button>
+                </Stack>
+
+                <Typography variant="body1" paragraph>
+                    {product.description}
+                </Typography>
+            </Stack>
+        </Box>
     )
 }

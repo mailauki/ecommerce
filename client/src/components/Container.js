@@ -10,7 +10,9 @@ export default function Container({ children, align }) {
         width: "100%",
         maxWidth: "600px",
         textAlign: align, 
-        padding: 2
+        mt: "65px",
+        mb: "30px",
+        p: 2
       }}
     >
       {children}
