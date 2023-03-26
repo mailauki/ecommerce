@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
-import { addProduct, editProduct } from "../features/products/productsSlice";
+import { addProduct } from "../features/products/productsSlice";
 import "../styles/Form.css";
 import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Tooltip, useFormControl } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -59,6 +59,7 @@ export default function ProductForm() {
     function handleSubmit() {
         const formData = {name: name, price: parseFloat(price), description: description}
 
+        // makes sure to grab the category from db and no duplicates
         const doubleCheckCategories = selectedCategories.map((selected) => {
             const findCategory = categories.find((category) => category.name === selected.name)
             if (findCategory) return findCategory

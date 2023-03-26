@@ -34,7 +34,7 @@ export default function Profile() {
     }, [dispatch, pathname, id])
 
     useEffect(() => {
-        if(currentUser) {
+        if(currentUser && user) {
             const disable = user.id === currentUser.id || pathname === "/me"
             if(disable) {
                 setDisableButtons(false)

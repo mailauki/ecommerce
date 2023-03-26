@@ -60,7 +60,7 @@ export default function Cart() {
                   <Avatar 
                     variant="square" 
                     sx={{ width: 80, height: 80, mr: 2 }} 
-                    src={cart_product.product.images[0].url} 
+                    src={cart_product.product.images && cart_product.product.images.length > 0 ? cart_product.product.images[0].url : ""} 
                     alt={cart_product.product.name}
                   >
                     <CartIcon sx={{ fontSize: 34 }} />

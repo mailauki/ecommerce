@@ -70,8 +70,6 @@ export default function Product() {
         })
     }
 
-    console.log(product)
-
     if(!product && !loading) return <h1>No Product</h1>
     else if(loading) return <h1>Loading...</h1>
 
