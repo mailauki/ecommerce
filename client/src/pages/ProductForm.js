@@ -29,6 +29,7 @@ export default function ProductForm() {
 
     function handleOpen(e) {
         e.preventDefault()
+        
         setOpen(true)
     }
 

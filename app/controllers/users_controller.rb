@@ -28,6 +28,12 @@ class UsersController < ApplicationController
         render json: user
     end
 
+    def destroy
+        user = find_user
+        user.destroy
+        head :no_content
+    end
+
     private
 
     def find_user
