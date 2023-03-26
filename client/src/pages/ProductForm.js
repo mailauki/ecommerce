@@ -8,6 +8,7 @@ import "../styles/Form.css";
 import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Tooltip, useFormControl } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SubmitDialog from "../components/SubmitDialog";
+import Container from "../components/Container";
 
 export default function ProductForm() {
     const { pathname } = useLocation();
@@ -29,7 +30,7 @@ export default function ProductForm() {
 
     function handleOpen(e) {
         e.preventDefault()
-        
+
         setOpen(true)
     }
 
@@ -250,167 +251,176 @@ export default function ProductForm() {
 
     return (
         <>
-            <form className="Form" onSubmit={handleOpen}>
-                <img src={url} alt={name} style={{ height: "300px", objectFit: "contain", display: !url ? "none" : "" }} />
+            <Container>
+                <form className="Form" onSubmit={handleOpen}>
+                    <img 
+                        src={url} alt={name} 
+                        style={{ 
+                            height: "300px", 
+                            objectFit: "contain", 
+                            display: !url ? "none" : "" 
+                        }} 
+                    />
 
-                <TextField
-                    label="Product Name"
-                    margin="normal"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <TextField 
-                    label="Product Price"
-                    margin="normal"
-                    required
-                    InputProps={{
-                        [priceFocus]: <PriceAdornment />
-                    }}
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                />
-                <TextField
-                    label="Product Description"
-                    margin="normal"
-                    multiline
-                    minRows={4}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
+                    <TextField
+                        label="Product Name"
+                        margin="normal"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField 
+                        label="Product Price"
+                        margin="normal"
+                        required
+                        InputProps={{
+                            [priceFocus]: <PriceAdornment />
+                        }}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                    />
+                    <TextField
+                        label="Product Description"
+                        margin="normal"
+                        multiline
+                        minRows={4}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
 
-                <Autocomplete
-                    multiple
-                    id="categories"
-                    value={selectedCategories}
-                    onChange={(event, newValue) => {
-                        const filterCategory = newValue.map((value) => {
-                            const isExisting = categories.some((option) => value === option.name)
-                            const newCategory = Object.assign({ name: value })
-                            const findCategory = categories.find((category) => category.name === value)
+                    <Autocomplete
+                        multiple
+                        id="categories"
+                        value={selectedCategories}
+                        onChange={(event, newValue) => {
+                            const filterCategory = newValue.map((value) => {
+                                const isExisting = categories.some((option) => value === option.name)
+                                const newCategory = Object.assign({ name: value })
+                                const findCategory = categories.find((category) => category.name === value)
 
-                            if (!isExisting && typeof value === 'string') {
-                                fetch("/categories", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify(newCategory)
-                                })
-                                    .then((r) => r.json())
-                                    .then((data) => {
-                                        dispatch(addCategory(data))
+                                if (!isExisting && typeof value === 'string') {
+                                    fetch("/categories", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify(newCategory)
                                     })
+                                        .then((r) => r.json())
+                                        .then((data) => {
+                                            dispatch(addCategory(data))
+                                        })
 
-                                return newCategory
-                            } else if (isExisting && typeof value === 'string') {
-                                return findCategory
-                            } else {
-                                return value
-                            }
-                        })
-
-                        const uniqueCategory = filterCategory.filter((value, index, array) => array.indexOf(value) === index)
-
-                        setSelectedCategories(uniqueCategory)
-                    }}
-                    inputValue={categoryInput}
-                    onInputChange={(event, newInput) => {
-                        setCategoryInput(newInput.toLowerCase())
-                    }}
-                    options={categories}
-                    getOptionLabel={(option) => option.name}
-                    freeSolo
-                    filterSelectedOptions
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip label={option.name} {...getTagProps({ index })} />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Product Categories"
-                            margin="normal"
-                            placeholder="Add Categories"
-                        />
-                    )}
-                />
-
-                <List
-                    subheader={
-                        <ListSubheader
-                            component="div"
-                            sx={{
-                                borderBottomColor: "divider",
-                                borderBottomStyle: "solid",
-                                borderBottomWidth: 1
-                            }}
-                        >
-                            Added Images
-                        </ListSubheader>
-                    }
-                >
-                    {images.map((image) => (
-                        <ListItem key={image.url}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    checked={images.includes(image)}
-                                    onChange={() => {
-                                        setImages(images.filter((img) => img !== image))
-                                        setUrl("")
-                                    }}
-                                />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={
-                                    <Link to={image.url} target="_blank">
-                                        <Typography color="text.secondary" noWrap>
-                                            {image.url}
-                                        </Typography>
-                                    </Link>
+                                    return newCategory
+                                } else if (isExisting && typeof value === 'string') {
+                                    return findCategory
+                                } else {
+                                    return value
                                 }
-                            />
-                        </ListItem>
-                    ))}
-                </List>
-                <TextField
-                    label="Product Images"
-                    margin="normal"
-                    value={image}
-                    onChange={(event) => {
-                        setImage(event.target.value)
-                    }}
-                    placeholder="Add Images"
-                    InputProps={{
-                        endAdornment:
-                            <InputAdornment position="end">
-                                <Tooltip
-                                    title="Add Image"
-                                    followCursor
-                                    enterDelay={800} leaveDelay={300}
-                                >
-                                    <IconButton
-                                        size="small"
-                                        aria-label="toggle password visibility"
-                                        onClick={() => {
-                                            setImages([...images, Object.assign({ url: image })])
-                                            setUrl(image)
-                                            setImage("")
-                                        }}
-                                        edge="end"
-                                    >
-                                        <AddIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </InputAdornment>
-                    }}
-                />
+                            })
 
-                <Button variant="contained" type="submit" className="submit">
-                    {pathname === "/products/add" ? "Add Product" : "Update Product" }
-                </Button>
-            </form>
+                            const uniqueCategory = filterCategory.filter((value, index, array) => array.indexOf(value) === index)
+
+                            setSelectedCategories(uniqueCategory)
+                        }}
+                        inputValue={categoryInput}
+                        onInputChange={(event, newInput) => {
+                            setCategoryInput(newInput.toLowerCase())
+                        }}
+                        options={categories}
+                        getOptionLabel={(option) => option.name}
+                        freeSolo
+                        filterSelectedOptions
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip label={option.name} {...getTagProps({ index })} />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Product Categories"
+                                margin="normal"
+                                placeholder="Add Categories"
+                            />
+                        )}
+                    />
+
+                    <List
+                        subheader={
+                            <ListSubheader
+                                component="div"
+                                sx={{
+                                    borderBottomColor: "divider",
+                                    borderBottomStyle: "solid",
+                                    borderBottomWidth: 1
+                                }}
+                            >
+                                Added Images
+                            </ListSubheader>
+                        }
+                    >
+                        {images.map((image) => (
+                            <ListItem key={image.url}>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        checked={images.includes(image)}
+                                        onChange={() => {
+                                            setImages(images.filter((img) => img !== image))
+                                            setUrl("")
+                                        }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={
+                                        <Link to={image.url} target="_blank">
+                                            <Typography color="text.secondary" noWrap>
+                                                {image.url}
+                                            </Typography>
+                                        </Link>
+                                    }
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <TextField
+                        label="Product Images"
+                        margin="normal"
+                        value={image}
+                        onChange={(event) => {
+                            setImage(event.target.value)
+                        }}
+                        placeholder="Add Images"
+                        InputProps={{
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <Tooltip
+                                        title="Add Image"
+                                        followCursor
+                                        enterDelay={800} leaveDelay={300}
+                                    >
+                                        <IconButton
+                                            size="small"
+                                            aria-label="toggle password visibility"
+                                            onClick={() => {
+                                                setImages([...images, Object.assign({ url: image })])
+                                                setUrl(image)
+                                                setImage("")
+                                            }}
+                                            edge="end"
+                                        >
+                                            <AddIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </InputAdornment>
+                        }}
+                    />
+
+                    <Button variant="contained" type="submit" className="submit">
+                        {pathname === "/products/add" ? "Add Product" : "Update Product" }
+                    </Button>
+                </form>
+            </Container>
 
             <SubmitDialog 
                 open={open} 

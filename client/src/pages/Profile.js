@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { fetchCurrentUser } from '../features/user/currentUserSlice';
 import { logout } from '../features/user/currentUserSlice';
-import { Button, Typography, Stack, ImageList, Avatar, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import { Button, Typography, Stack, ImageList, Avatar } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ProfileCard from '../components/ProfileCard';
 import Container from '../components/Container';
+import DeleteDialog from '../components/DeleteDialog';
 
 export default function Profile() {
     const { id } = useParams();
@@ -56,11 +57,10 @@ export default function Profile() {
         })
         .then((r) => {
             if(r.ok) {
-                alert("Logged Out")
                 dispatch(logout())
             }
-            dispatch(fetchUser())
         })
+        navigate("/")
     }
 
     function handleOpen() {
@@ -82,7 +82,6 @@ export default function Profile() {
         })
 
         handleLogout()
-        navigate("/")
     }
 
     if(errors) return <h1>{errors.map((err) => err)}</h1>
@@ -190,18 +189,7 @@ export default function Profile() {
                 </ImageList>
             </Container>
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Are You Sure?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Delete your account will delete all of your content and anything connected to it forever.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} variant="outlined">Cancel</Button>
-                    <Button onClick={handleDelete} variant="contained" color="error">Confirm</Button>
-                </DialogActions>
-            </Dialog>
+            <DeleteDialog type="account" open={open} handleClose={handleClose} handleDelete={handleDelete} />
         </>
     )
 }
