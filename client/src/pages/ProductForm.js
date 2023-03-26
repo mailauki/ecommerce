@@ -3,10 +3,10 @@ import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, addCategory } from "../features/categories/categoriesSlice";
 import { addProduct } from "../features/products/productsSlice";
+import { fetchProductById } from "../features/products/productSlice";
 import "../styles/Form.css";
 import { TextField, Button, Autocomplete, Chip, Checkbox, List, ListItem, ListItemIcon, ListItemText, ListSubheader, InputAdornment, IconButton, Typography, Tooltip, useFormControl } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { fetchProductById } from "../features/products/productSlice";
 import SubmitDialog from "../components/SubmitDialog";
 
 export default function ProductForm() {
@@ -228,8 +228,6 @@ export default function ProductForm() {
         }
 
         setOpen(false)
-
-        // navigate("/me")
     }
 
     function PriceAdornment() {

@@ -37,7 +37,7 @@ export default function Header() {
                         <IconButton component={Link} to="/me">
                             <Avatar 
                                 alt={user.username || "username"}
-                                src=""
+                                src={user.avatar || ""}
                                 sx={{ width: 24, height: 24 }} 
                             />
                         </IconButton>

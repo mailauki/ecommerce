@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Product from "./pages/Product";
 import Profile from "./pages/Profile";
 import ProductForm from "./pages/ProductForm";
+import UserForm from "./pages/UserForm";
 import Cart from "./pages/Cart";
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/products/add" element={<ProductForm />} />
             <Route path="/products/:id/update" element={<ProductForm />} />
             <Route path="/products/:id" element={<Product />} />
+            <Route path="/users/:id/update" element={<UserForm />} />
             <Route path="/users/:id" element={<Profile />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/me" element={<Profile />} />

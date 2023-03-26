@@ -73,7 +73,7 @@ export default function Home() {
                 }}
             >
                 {filteredProducts.map((product, index) => {
-                    return <ProductCard key={product.index} product={product} index={index} />
+                    return <ProductCard key={product.id} product={product} index={index} />
                 })}
             </ImageList>
         </Box>

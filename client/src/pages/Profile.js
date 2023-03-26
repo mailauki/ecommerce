@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { fetchCurrentUser } from '../features/user/currentUserSlice';
 import { logout } from '../features/user/currentUserSlice';
-import { Button, Typography, Stack, ImageList } from '@mui/material';
+import { Button, Typography, Stack, ImageList, Avatar } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import ProfileCard from '../components/ProfileCard';
 import Container from '../components/Container';
 
@@ -21,6 +22,7 @@ export default function Profile() {
     const currentUser = useSelector((state) => state.currentUser.entities);
     const errors = useSelector((state) => state.user.errors);
     const [disableButtons, setDisableButtons] = useState(false);
+    const matches = useMediaQuery('(max-width:500px)');
 
     useEffect(() => {
         if(pathname === "/me") {
@@ -68,28 +70,60 @@ export default function Profile() {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
+                flexWrap="wrap"
             >
-                <Typography variant="h5">@{user.username}</Typography>
+                    <Avatar 
+                        src={user.avatar || ""} 
+                        alt="avatar" 
+                        sx={{ width: 120, height: 120, m: 2 }} 
+                    />
 
-                <Stack>
-                    <Typography variant="body2">Products</Typography>
-                    <Typography variant="h6">{user.products_total || 0}</Typography>
-                </Stack>
+                
+                    {matches ? (
+                        <Stack sx={{ flexGrow: 1 }} alignItems="center">
+                            <Stack direction="row" alignItems="center" justifyContent="space-evenly" sx={{ width: "100%" }}>
+                                <Typography variant="h5">@{user.username}</Typography>
 
-                <Button 
-                    variant="outlined"
-                    startIcon={<LogoutIcon />}
-                    onClick={handleLogout}
-                    sx={{ opacity: disableButtons ? 0 : 1 }}
-                >
-                    Logout
-                </Button>
+                                <Stack>
+                                    <Typography variant="body2" color="text.secondary">Products</Typography>
+                                    <Typography variant="h6">{user.products_total || 0}</Typography>
+                                </Stack>
+                            </Stack>
+
+                            <Button 
+                                variant="outlined"
+                                startIcon={<LogoutIcon />}
+                                onClick={handleLogout}
+                                sx={{ opacity: disableButtons ? 0 : 1 }}
+                            >
+                                Logout
+                            </Button>
+                        </Stack>
+                    ) : (
+                        <>
+                            <Typography variant="h5">@{user.username}</Typography>
+
+                            <Stack>
+                                <Typography variant="body2" color="text.secondary">Products</Typography>
+                                <Typography variant="h6">{user.products_total || 0}</Typography>
+                            </Stack>
+
+                            <Button 
+                                variant="outlined"
+                                startIcon={<LogoutIcon />}
+                                onClick={handleLogout}
+                                sx={{ opacity: disableButtons ? 0 : 1 }}
+                            >
+                                Logout
+                            </Button>
+                        </>
+                    )}
             </Stack>
 
             <Stack 
                 direction="row" 
+                spacing={1}
                 justifyContent="space-between"
-                // sx={{ display: pathname === "/me" || user ? parseInt(id) === user.id ? "" : "none" : "none" }}
                 sx={{ display: disableButtons ? "none" : "" }}
             >
                 <Button
@@ -104,6 +138,7 @@ export default function Profile() {
                     <Button 
                         variant="outlined"
                         startIcon={<ProfileIcon />}
+                        component={Link} to={`/users/${user.id}/update`}
                     >
                         Update Profile
                     </Button>
