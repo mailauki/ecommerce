@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById } from "../features/products/productSlice";
 import { fetchCurrentUser, addCart } from "../features/user/currentUserSlice";
 import { Link, useParams } from "react-router-dom";
-import { Avatar, Box, Button, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function Product() {
@@ -14,7 +14,7 @@ export default function Product() {
     const user = useSelector((state) => state.currentUser.entities);
     const [image, setImage] = useState("https://dummyimage.com/640x640/ccc/555/&text=image");
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [disableCart, setDisableCart] = useState(false)
+    const [disableCart, setDisableCart] = useState(false);
 
     const handleImageClick = (image, index) => {
         setSelectedIndex(index)
@@ -70,6 +70,7 @@ export default function Product() {
         })
     }
 
+    console.log(product)
 
     if(!product && !loading) return <h1>No Product</h1>
     else if(loading) return <h1>Loading...</h1>
@@ -146,7 +147,7 @@ export default function Product() {
                         variant="contained"
                         startIcon={<EditIcon />}
                         component={Link} to={`/products/${id}/update`}
-                        disabled={user ? product.user.id === user.id : true}
+                        disabled={user ? product.user.id === user.id ? false : true : true}
                         sx={{ display: user ? product.user.id === user.id ? "" : "none" : "none" }}
                     >
                         Edit
@@ -183,6 +184,16 @@ export default function Product() {
                 <Typography variant="body1" paragraph>
                     {product.description}
                 </Typography>
+
+                {product.categories.length > 0 ? (
+                    <Stack direction="row" spacing={1}>
+                        {product.categories.map((category) => (
+                            <Chip key={category.id} label={category.name} />
+                        ))}
+                    </Stack>
+                ) : (
+                    <></>
+                )}
             </Stack>
         </Box>
     )

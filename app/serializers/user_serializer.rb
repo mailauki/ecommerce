@@ -3,6 +3,4 @@ class UserSerializer < ActiveModel::Serializer
 
   has_many :products, dependent: :destroy
   has_many :carts
-  
-  # has_many :carts_products, through: :carts, source: :product
 end

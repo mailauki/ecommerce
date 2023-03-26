@@ -18,11 +18,9 @@ export default function Profile() {
     const dispatch = useDispatch();
     const [userType, setUserType] = useState("currentUser");
     const user = useSelector((state) => state[userType].entities);
-    const currentUser = useSelector((state) => state.currentUser.entities)
+    const currentUser = useSelector((state) => state.currentUser.entities);
     const errors = useSelector((state) => state.user.errors);
-    // console.log(user)
-    // console.log(pathname)
-    // console.log(id)
+    const [disableButtons, setDisableButtons] = useState(false);
 
     useEffect(() => {
         if(pathname === "/me") {
@@ -33,7 +31,20 @@ export default function Profile() {
             dispatch(fetchUser(id))
             setUserType("user")
         }
-    }, [dispatch, pathname, id]);
+    }, [dispatch, pathname, id])
+
+    useEffect(() => {
+        if(currentUser) {
+            const disable = user.id === currentUser.id || pathname === "/me"
+            if(disable) {
+                setDisableButtons(false)
+            } else {
+                setDisableButtons(true)
+            }
+        } else {
+            setDisableButtons(true)
+        }
+    }, [user, currentUser, pathname])
 
     function handleLogout() {
         fetch("/logout", {
@@ -69,7 +80,7 @@ export default function Profile() {
                     variant="outlined"
                     startIcon={<LogoutIcon />}
                     onClick={handleLogout}
-                    sx={{ opacity: pathname === "/me" || currentUser ? parseInt(id) === currentUser.id ? 1 : 0 : 0 }}
+                    sx={{ opacity: disableButtons ? 0 : 1 }}
                 >
                     Logout
                 </Button>
@@ -78,7 +89,8 @@ export default function Profile() {
             <Stack 
                 direction="row" 
                 justifyContent="space-between"
-                sx={{ display: pathname === "/me" || currentUser ? parseInt(id) === currentUser.id ? "" : "none" : "none" }}
+                // sx={{ display: pathname === "/me" || user ? parseInt(id) === user.id ? "" : "none" : "none" }}
+                sx={{ display: disableButtons ? "none" : "" }}
             >
                 <Button
                     variant="contained"

@@ -30,17 +30,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "categories_products", id: false, force: :cascade do |t|
-    t.bigint "product_id", null: false
-    t.bigint "category_id", null: false
-  end
-
   create_table "images", force: :cascade do |t|
     t.string "url"
     t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_images_on_product_id"
+  end
+
+  create_table "product_categories", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_product_categories_on_category_id"
+    t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -64,5 +68,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_005347) do
   add_foreign_key "carts", "products"
   add_foreign_key "carts", "users"
   add_foreign_key "images", "products"
+  add_foreign_key "product_categories", "categories"
+  add_foreign_key "product_categories", "products"
   add_foreign_key "products", "users"
 end

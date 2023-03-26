@@ -8,7 +8,7 @@ class ProductsController < ApplicationController
 
     def show
         product = find_product
-        render json: product
+        render json: product, include: ["user", "images", "categories", "product_categories", "product_categories.category"]
     end
 
     def create

@@ -52,6 +52,7 @@ export default function ProductForm() {
             setPrice(product.price)
             setDescription(product.description)
             setImages(product.images)
+            setSelectedCategories(product.categories)
         }
     }, [product, id])
 
@@ -77,6 +78,49 @@ export default function ProductForm() {
                     r.json().then((data) => {
                         console.log(data)
                         // dispatch(editProduct(data))
+
+                        if(selectedCategories.length > 0 || doubleCheckCategories.length > 0) {
+                            // adds to db if in form and not in db
+                            const newCategories = doubleCheckCategories.filter((category) => {
+                                const match = product.product_categories.find((product_category) => product_category.category.name === category.name)
+                                return (
+                                    match ? null : category
+                                )
+                            }).flat()
+
+                            newCategories.map((category) => {
+                                return (
+                                    fetch("/product_categories", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({category_id: category.id, product_id: data.id})
+                                    })
+                                    .then((r) => r.json())
+                                    .then((data) => console.log(data))
+                                )
+                            })
+
+                            // removes from db if in db and not in form
+                            const removeCategories = product.product_categories.filter((category) => {
+                                const match = selectedCategories.find((product_category) => product_category.name === category.category.name)
+                                return (
+                                    match ? null : category
+                                )
+                            }).flat()
+
+                            removeCategories.map((category) => {
+                                return (
+                                    fetch(`/product_categories/${category.id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        }
+                                    })
+                                )
+                            })
+                        }
 
                         if(images.length > 0) {
                             // adds to db if in form and not in db
@@ -120,6 +164,8 @@ export default function ProductForm() {
                                 )
                             })
                         }
+
+                        navigate(`/products/${id}`)
                     })
                 } else {
                     r.json().then((data) => console.log(data.error))
@@ -140,6 +186,22 @@ export default function ProductForm() {
                         dispatch(addProduct(data))
                         // dispatch add to user product total
                         
+                        if(selectedCategories.length > 0 || doubleCheckCategories.length > 0) {
+                            doubleCheckCategories.map((category) => {
+                                // return console.log(category)
+                                return (
+                                    fetch("/product_categories", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({category_id: category.id, product_id: data.id})
+                                    })
+                                )
+                            })
+                            
+                        }
+
                         if(images.length > 0) {
                             images.map((image) => {
                                 return (
@@ -155,6 +217,8 @@ export default function ProductForm() {
                                 )
                             })
                         }
+
+                        navigate("/me")
                     })
                 } else {
                     r.json().then((data) => console.log(data.error))
@@ -164,7 +228,7 @@ export default function ProductForm() {
 
         setOpen(false)
 
-        navigate("/me")
+        // navigate("/me")
     }
 
     function PriceAdornment() {
