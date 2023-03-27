@@ -18,16 +18,35 @@ export default function Cart() {
   }, [dispatch]);
 
   function handleDeleteCartProduct(id) {
-    console.log("delete", id)
-
     fetch(`/carts/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
     })
     dispatch(removeCart(id))
   }
 
+  function handleCheckout() {
+    if(user.carts && user.carts.length > 0) {
+      user.carts.map((cart_product) => {
+        fetch(`/carts/${cart_product.id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        return dispatch(removeCart(cart_product.id))
+      })
+    }
+  }
+
   if(!user || !user.carts || user.cart_total === 0) {
-    return <h1>No Products in Cart</h1>
+    return (
+      <Container>
+        <Typography variant="h4">Cart is Empty</Typography>
+      </Container>
+    )
   }
 
   return (
@@ -80,7 +99,16 @@ export default function Cart() {
         </List>
       </Container>
       
-      <Box sx={{ position: "fixed", bottom: 0, width: "100%", maxWidth: "600px", pb: "50px", bgcolor: "background.default" }}>
+      <Box 
+        sx={{ 
+          position: "fixed", 
+          bottom: 0, 
+          width: "100%", 
+          maxWidth: "600px", 
+          pb: "50px", 
+          bgcolor: "background.default" 
+        }}
+      >
         <Divider />
       
         <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1 }}>
@@ -99,6 +127,7 @@ export default function Cart() {
             variant="contained" 
             size="large" 
             sx={{ m: 2, p: 2, fontSize: 18 }}
+            onClick={handleCheckout}
           >
             Checkout
           </Button>

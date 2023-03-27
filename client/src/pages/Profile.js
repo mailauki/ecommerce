@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../features/user/userSlice';
 import { fetchCurrentUser } from '../features/user/currentUserSlice';
 import { logout } from '../features/user/currentUserSlice';
+import ProfileCard from '../components/ProfileCard';
+import Container from '../components/Container';
+import DeleteDialog from '../components/DeleteDialog';
 import { Button, Typography, Stack, ImageList, Avatar } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/Person';
 import RemoveAccountIcon from '@mui/icons-material/PersonOff';
 import AddIcon from '@mui/icons-material/Add';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ProfileCard from '../components/ProfileCard';
-import Container from '../components/Container';
-import DeleteDialog from '../components/DeleteDialog';
 
 export default function Profile() {
     const { id } = useParams();
@@ -25,7 +25,7 @@ export default function Profile() {
     const errors = useSelector((state) => state.user.errors);
     const [disableButtons, setDisableButtons] = useState(false);
     const [open, setOpen] = useState(false);
-    const matches = useMediaQuery('(max-width:500px)');
+    const mobile = useMediaQuery('(max-width:500px)');
 
     useEffect(() => {
         if(pathname === "/me") {
@@ -84,8 +84,20 @@ export default function Profile() {
         handleLogout()
     }
 
-    if(errors) return <h1>{errors.map((err) => err)}</h1>
-    else if(!user) return <h1>No User Found</h1>
+    if(errors) {
+        return (
+            <Container>
+                <Typography variant="h4">{errors.map((err) => err)}</Typography>
+            </Container>
+        )
+    }
+    if(!user || user.error) {
+        return (
+            <Container>
+                <Typography variant="h4">No User Found</Typography>
+            </Container>
+        )
+    }
 
     return (
         <>
@@ -103,7 +115,7 @@ export default function Profile() {
                         />
 
                     
-                        {matches ? (
+                        {mobile ? (
                             <Stack sx={{ flexGrow: 1 }} alignItems="center">
                                 <Stack direction="row" alignItems="center" justifyContent="space-evenly" sx={{ width: "100%" }}>
                                     <Typography variant="h5">@{user.username}</Typography>

@@ -35,4 +35,8 @@
     align-items: center;
     justify-content: center;
   }
+  
+  .Product .buttons {
+    flex-direction: column;
+  }
 }

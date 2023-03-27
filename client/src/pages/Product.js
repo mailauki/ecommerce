@@ -5,9 +5,11 @@ import { fetchProductById } from "../features/products/productSlice";
 import { fetchCurrentUser, addCart } from "../features/user/currentUserSlice";
 import { Link, useParams } from "react-router-dom";
 import DeleteDialog from "../components/DeleteDialog";
+import Container from "../components/Container";
 import { Avatar, Box, Button, Chip, ListItem, ListItemButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function Product() {
     const { id } = useParams();
@@ -20,6 +22,7 @@ export default function Product() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [disableCart, setDisableCart] = useState(false);
+    const mobile = useMediaQuery('(max-width:500px)');
 
     const handleImageClick = (image, index) => {
         setSelectedIndex(index)
@@ -70,7 +73,6 @@ export default function Product() {
         })
         .then((r) => r.json())
         .then((data) => {
-            console.log(data)
             dispatch(addCart(data))
         })
     }
@@ -95,8 +97,20 @@ export default function Product() {
         navigate("/me")
     }
 
-    if(!product && !loading) return <h1>No Product</h1>
-    else if(loading) return <h1>Loading...</h1>
+    if(!product && !loading) {
+        return (
+            <Container>
+                <Typography variant="h4">No Product</Typography>
+            </Container>
+        )
+    }
+    if(loading) {
+        return (
+            <Container>
+                <Typography variant="h4">Loading...</Typography>
+            </Container>
+        )
+    }
 
     return (
         <>
@@ -167,7 +181,7 @@ export default function Product() {
                     >
                         <Typography variant="h4">{product.name}</Typography>
 
-                        <Stack direction="row" spacing={1}>
+                        <Stack direction={mobile ? "column" : "row"} spacing={1}>
                             <Button
                                 variant="contained"
                                 startIcon={<EditIcon />}
